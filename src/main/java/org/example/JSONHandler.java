@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.lang.Integer;
 
 public class JSONHandler {
 
@@ -53,7 +52,7 @@ public class JSONHandler {
      * @return ArrayList<Item>
      */
     private static ArrayList<Item> convertItems(JSONArray jsonItems){
-        ArrayList<Item> itemList = new ArrayList<Item>();
+        ArrayList<Item> itemList = new ArrayList<>();
         for (Object object : jsonItems){
             JSONObject item = (JSONObject) object;
             String name = (String) item.get("name");
