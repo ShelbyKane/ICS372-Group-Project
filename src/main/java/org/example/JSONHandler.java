@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.lang.Integer;
 
 public class JSONHandler {
 
@@ -17,30 +18,27 @@ public class JSONHandler {
      * @param fileLocation String of directory for file to be parsed
      * @return Order object created from JSON file
      */
-    public Order convertToOrder(String fileLocation){
+    public static Order convertToOrder(String fileLocation){
 
         try (FileReader reader = new FileReader(fileLocation)){
             JSONParser parser = new JSONParser();
-            //Create array of objects from JSON file
-            JSONArray array = (JSONArray) parser.parse(reader);
 
-            //Iterate to get each individual object
-            for(Object object : array){
-                //Get individual order object
-                JSONObject orderObj = (JSONObject) object;
+            JSONObject fullOrderObj = (JSONObject) parser.parse(reader);
+            JSONObject orderObj = (JSONObject) fullOrderObj.get("order");
 
-                //Get order details
-                String type = (String) orderObj.get("type");
-                Date date = (Date) orderObj.get("date");
-                Order order = new Order(type, date);
+            //Get order details
+            String type = (String) orderObj.get("type");
 
-                //Get items, convert and place into order object before returning
-                JSONArray items = (JSONArray) orderObj.get("items");
-                for(Item i : convertItems(items)){
-                    order.addItem(i);
-                }
-                return order;
+            Date date = new Date(((Number) orderObj.get("order_date")).longValue());
+            Order order = new Order(type, date);
+
+            //Get items, convert and place into order object before returning
+            JSONArray items = (JSONArray) orderObj.get("items");
+            for(Item i : convertItems(items)){
+                order.addItem(i);
             }
+            return order;
+
 
         } catch(IOException | ParseException e){
             e.printStackTrace();
@@ -54,12 +52,12 @@ public class JSONHandler {
      * @param jsonItems JSONArray
      * @return ArrayList<Item>
      */
-    private ArrayList<Item> convertItems(JSONArray jsonItems){
+    private static ArrayList<Item> convertItems(JSONArray jsonItems){
         ArrayList<Item> itemList = new ArrayList<Item>();
         for (Object object : jsonItems){
             JSONObject item = (JSONObject) object;
             String name = (String) item.get("name");
-            int quantity = (int) item.get("quantity");
+            int quantity = ((Number) item.get("quantity")).intValue();
             double price = (double) item.get("price");
 
             //Fix when Item constructor is made:
