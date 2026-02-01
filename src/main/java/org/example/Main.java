@@ -6,6 +6,7 @@ public class Main {
     static void main() {
 
         System.out.println("Hi I'm just trying to figure out how to get this all set up");
+        System.out.println("Testing, testing.");
 
 
 
