@@ -73,7 +73,7 @@ public class Main {
                     // user will get notification if edit is successful or not
                     if (status_change(orders.get(order_num), temp)) {
                         System.out.println("Change successfully.");
-                        System.out.printf("Order number: %d changed to %s\n", orders.get(order_num).getOrderNumber(), orders.get(order_num).getStage());
+                        System.out.printf("Order number: %d status changed to %s\n", orders.get(order_num).getOrderNumber(), orders.get(order_num).getStage());
                     } else {
                         System.out.println("Change failed");
                         System.out.println();
@@ -107,10 +107,10 @@ public class Main {
                         int current_idx = orders.size();
                         orders.add(JSONHandler.convertToOrder(file_location.getAbsolutePath()));
                         if (current_idx == 0 ) {
-                            index.put(String.valueOf(orders.getFirst().getOrderNumber()), orders.getFirst().getOrderNumber());
+                            index.put(String.valueOf(orders.getFirst().getOrderNumber()), 0);
 
                         } else {
-                            index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), orders.get(current_idx).getOrderNumber());
+                            index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                         }
 
                         System.out.println("Import is successful!\n");
@@ -127,7 +127,16 @@ public class Main {
                     break;
 
                 case "0":   // terminate program
-                    sys_active = false;
+                    System.out.println("--------------------Exit--------------------");
+                    System.out.println("a) Yes\nb) No");
+                    System.out.print("Are you sure you want to exit? ");
+                    temp = keyboard.nextLine();
+                    System.out.println();
+
+                    if (temp.equalsIgnoreCase("a")) {
+                        sys_active = false;
+                    }
+
                     break;
 
                 default:    // invalid input for options
@@ -147,16 +156,13 @@ public class Main {
      * @return True/false value to indicate the action is successful or failure.
      */
     public static boolean status_change(Order order, String option) {
-        if (option.equalsIgnoreCase("a") || option.equalsIgnoreCase("b")) {
-            switch(option) {
-                case "a" -> order.startFulfilling();
-                case "b" -> order.completeOrder();
-            }
-
-            return true;
+        switch(option) {
+            case "a" -> order.startFulfilling();
+            case "b" -> order.completeOrder();
+            default -> {return false;}
         }
 
-        return false;
+        return true;
     }
 
     /**
