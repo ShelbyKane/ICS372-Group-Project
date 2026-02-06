@@ -17,88 +17,128 @@ public class Main {
         ArrayList<Order> orders = new ArrayList<>();    // list of orders
         HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
 
-        System.out.println("--------------------Tracking System--------------------\n");
+        System.out.println("*********************************** Tracking System ***********************************\n");
         System.out.println("NOTICE: Please strictly follow the instructions to ensure the software runs correctly.\nThank you.\n");
 
         // software will continue to run until user terminate
         while (sys_active) {
             // option menu: edit order status, display orders, import and export JSON file, and exit software
-            System.out.println("--------------------Menu--------------------\n1) Show Order Detail\n2) Edit Order Status\n3) Display Orders\n4) Import JSON File\n5) Export JSON File\n0) Exit");
-            System.out.print("Please enter the option number: ");
+            System.out.println("======================= Main Menu =======================\n1) Show Order Detail\n2) Edit Order Status\n3) Display Orders\n4) Import JSON File\n5) Export JSON File\n0) Exit");
+            System.out.print("\nPlease select an option: ");
             temp = keyboard.nextLine();
-
-            System.out.println();
 
             switch(temp){
                 case "1":   // show order detail
-                    System.out.println("--------------------Show Order Detail--------------------");
+                    System.out.println("------------------- Show Order Detail -------------------");
+                    System.out.println("Enter q to return to main menu.\n");
                     System.out.print("Please enter the order number: ");
                     temp = keyboard.nextLine();
-                    System.out.println();
+                    System.out.println("---------------------------------------------------------");
 
-                    if (orders.isEmpty() || !index.containsKey(temp)) {
-                        System.out.println("Cannot find order.");
-                        System.out.println();
+                    if (temp.equalsIgnoreCase("q")) {
+                        System.out.println("Return to main menu.");
+                        break;
+
+                    } else if (orders.isEmpty() || !index.containsKey(temp)) {
+                        System.out.println("Cannot find the order.");
                         break;
                     }
 
                     // order number is valid, the process continue
                     order_num = index.get(temp);
                     orders.get(order_num).displayOrder();
-                    System.out.println();
                     break;
 
                 case "2":   // edit order stage/states
-                    System.out.println("--------------------Edit Order Staus--------------------");
+                    System.out.println("-------------------- Edit Order Staus --------------------");
+                    System.out.println("Enter q to return to main menu.\n");
                     System.out.print("Please enter the order number: ");
                     temp = keyboard.nextLine();
-                    System.out.println();
+                    System.out.println("---------------------------------------------------------");
 
-                    if (orders.isEmpty() || !index.containsKey(temp)) {
-                        System.out.println("Cannot find order.");
-                        System.out.println();
+                    if (temp.equalsIgnoreCase("q")) {
+                        System.out.println("Return to main menu.");
+                        break;
+
+                    } else if (orders.isEmpty() || !index.containsKey(temp)) {
+                        System.out.println("Cannot find the order.");
                         break;
                     }
 
                     // order number is valid, the process continue
                     order_num = index.get(temp);
                     orders.get(order_num).displayOrder();
-                    System.out.println();
+                    System.out.println("---------------------------------------------------------");
 
                     // change status to: in progress or completed
+                    System.out.println("Enter q to return to main menu.\n");
                     System.out.println("Change order status to:\na) In-Progress\nb) Completed");
-                    System.out.print("Please enter option: ");
+                    System.out.print("\nPlease select an option: ");
                     temp = keyboard.nextLine();
+                    System.out.println("---------------------------------------------------------");
 
-                    // user will get notification if edit is successful or not
+                    if (temp.equalsIgnoreCase("q")) {
+                        System.out.println("Return to main menu.");
+                        break;
+
+                    }
+
+                    if (temp.equalsIgnoreCase("b") && orders.get(order_num).getStage().equalsIgnoreCase("incoming")) {
+                        System.out.println("You are attempting to skip an order stage: incoming -> completed\n(skipping \"in-progress\")");
+                        System.out.println("a) Yes\nb) No");
+                        System.out.print("\nDo you want to proceed? ");
+                        temp = keyboard.nextLine();
+                        System.out.println("---------------------------------------------------------");
+
+                        if (temp.equalsIgnoreCase("a")) {
+                            temp = "b";
+
+                        } else {
+                            System.out.println("Cancelled change.");
+                            break;
+                        }
+
+                    }
+
                     if (status_change(orders.get(order_num), temp)) {
                         System.out.println("Change successfully.");
-                        System.out.printf("Order number: %d status changed to %s\n", orders.get(order_num).getOrderNumber(), orders.get(order_num).getStage());
+                        System.out.printf("Order number: %d\nNEW status: %s\n", orders.get(order_num).getOrderNumber(), orders.get(order_num).getStage());
+
                     } else {
                         System.out.println("Change failed");
-                        System.out.println();
                     }
 
                     break;
 
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
-                    System.out.println("--------------------Display Orders--------------------");
-                    System.out.println("Select order options:\na) Completed orders\nb) Uncompleted orders\nc) All orders");
-                    System.out.print("Please enter option: ");
+                    System.out.println("-------------------- Display Orders --------------------");
+                    System.out.println("Enter q to return to main menu.\n");
+                    System.out.println("Order display options:\na) Completed orders\nb) Uncompleted orders\nc) All orders");
+                    System.out.print("\nPlease select an option: ");
                     temp = keyboard.nextLine();
-                    System.out.println();
+                    System.out.println("---------------------------------------------------------");
+
+                    if (temp.equalsIgnoreCase("q")) {
+                        System.out.println("Return to main menu.");
+                        break;
+                    }
 
                     display_orders(temp, orders);   // call display_orders method
-
                     break;
 
                 case "4":   // import json file
-                    System.out.println("--------------------Import JSON File--------------------");
+                    System.out.println("-------------------- Import JSON File --------------------");
+                    System.out.println("Enter q to return to main menu.\n");
                     System.out.println("Format: double backslash (\\\\) or forward slash (/)");
                     System.out.println("Example: C:\\\\Users\\\\User... or C:/Users/User...");
-                    System.out.print("Please enter the JSON file location: ");
+                    System.out.print("\nPlease enter the JSON file location: ");
                     temp = keyboard.nextLine();
-                    System.out.println();
+                    System.out.println("---------------------------------------------------------");
+
+                    if (temp.equalsIgnoreCase("q")) {
+                        System.out.println("Return to main menu.");
+                        break;
+                    }
 
                     File file_location = new File(temp);
 
@@ -106,6 +146,7 @@ public class Main {
                     if (file_location.exists()) {
                         int current_idx = orders.size();
                         orders.add(JSONHandler.convertToOrder(file_location.getAbsolutePath()));
+
                         if (current_idx == 0 ) {
                             index.put(String.valueOf(orders.getFirst().getOrderNumber()), 0);
 
@@ -113,28 +154,33 @@ public class Main {
                             index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                         }
 
-                        System.out.println("Import is successful!\n");
+                        System.out.println("Import is successful!");
 
                     } else {
-                        System.out.println("Cannot find file.\n");
+                        System.out.println("Cannot find the file.");
                     }
 
                     break;
 
                 case "5":   // Export (NEED THE EXPORT CLASS)
-                    System.out.println("--------------------Export JSON File--------------------");
+                    System.out.println("-------------------- Export JSON File --------------------");
+//                    System.out.println("Enter q to return to main menu.\n");
 
+                    System.out.println("the feature is not available at this moment.");
                     break;
 
                 case "0":   // terminate program
-                    System.out.println("--------------------Exit--------------------");
+                    System.out.println("------------------------- Exit -------------------------");
                     System.out.println("a) Yes\nb) No");
-                    System.out.print("Are you sure you want to exit? ");
+                    System.out.print("\nAre you sure you want to exit? ");
                     temp = keyboard.nextLine();
-                    System.out.println();
 
                     if (temp.equalsIgnoreCase("a")) {
                         sys_active = false;
+
+                    } else {
+                        System.out.println("---------------------------------------------------------");
+                        System.out.println("Return to main menu.");
                     }
 
                     break;
@@ -146,7 +192,7 @@ public class Main {
         }
 
         keyboard.close();
-        System.out.println("--------------------Tracking System CLOSED--------------------\n");
+        System.out.println("******************************* Tracking System CLOSED *******************************\n");
     }
 
     /**
@@ -172,6 +218,12 @@ public class Main {
      */
     public static void display_orders(String option, ArrayList<Order> list) {
         int count = 0;
+        String keyword;
+
+        if (list.isEmpty()) {
+            System.out.println("There are no orders in the software.");
+            return;
+        }
 
         switch(option) {
             case "a":   // completed orders
@@ -182,8 +234,7 @@ public class Main {
                     }
                 }
 
-                System.out.printf("\nTotal of completed orders: %d\n", count);
-                count = 0;
+                keyword = "completed";
                 break;
 
             case "b":   // uncompleted orders
@@ -194,8 +245,7 @@ public class Main {
                     }
                 }
 
-                System.out.printf("\nTotal of uncompleted orders: %d\n", count);
-                count = 0;
+                keyword = "uncompleted";
                 break;
 
             case "c":   // all orders
@@ -204,15 +254,16 @@ public class Main {
                     count += 1;
                 }
 
-                System.out.printf("\nTotal number of orders: %d\n", count);
-                count = 0;
+                keyword = "all";
                 break;
 
             default:
-                System.out.println("Invalid input.");
+                System.out.printf("There is no option: %s\n", option);
+                return;
         }
 
-        System.out.println();
+        if (count != 0) System.out.println();
+        System.out.printf("The total number of %s orders is %d.\n", keyword, count);
     }
 
 }
