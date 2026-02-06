@@ -21,7 +21,7 @@ public class Order {
         orderNumber = orderIndex++;
         this.type = type;
         this.date = date;
-        this.stage = "incoming";
+        this.stage = "incoming"; //automatically sets the status as incomming
 
         items = new ArrayList<Item>();
 
@@ -91,22 +91,27 @@ public class Order {
      * displayOrder prints the order to output
      */
     public void displayOrder() {
+        System.out.println(this.toString());
+    }
 
-        //Display order number, date and stage
-        System.out.println("Order number: " + orderNumber +
-                            "\nOrder date: " + date +
-                            "\nOrder stage: " + stage +
-                            "\nItems:"
-                            );
-        //iterate through ArrayList items to print out the information about each item
+    /**
+     * toString returns a reasonably legible string representation of the order, displaying all info and items
+     * @return the order but in readable format
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("Order number: " + this.orderNumber);
+        sb.append("\nOrder type: " + this.type);
+        sb.append("\nOrder stage: " + this.stage);
+        sb.append("\nOrder date: " + this.date);
+        sb.append("\nItems: \n");
         for (Item i : items) {
-            System.out.println("Item name: " + i.getName() +
-                                "\nItem quantity: " + i.getQuantity() +
-                                "\nItem price: " + i.getPrice());
-
+            sb.append(i.stringForOrder());
         }
-        // total cost of the order
-        System.out.println("\nTotal cost of order: " + getTotalCost());
+        sb.append("\nTotal cost of order: " + getTotalCost());
+
+        return String.valueOf(sb);
     }
 
 

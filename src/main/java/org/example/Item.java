@@ -47,7 +47,25 @@ public class Item {
     }
     @Override
     public String toString() {
+
         return "Item{" + "name=" + name + ", quantity=" + quantity + ", price=" + price + '}';
+    }
+
+    /**
+     * Uses a stringbuilder object to create a string representation of the order
+     * specifically for the to string method in the order class
+     * @return a string representation of the item specifically formatted for displaying the entire order
+     */
+    public String stringForOrder(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("\tName: "); //add a tab so it looks clean
+        sb.append(this.name);
+        sb.append("\n\t"); //adding a new line then a tab so it fits neatly within the order
+        sb.append(this.quantity);
+        sb.append("\n\t");
+        sb.append(String.format("%02d", this.price));
+
+        return String.valueOf(sb);
     }
 
 }
