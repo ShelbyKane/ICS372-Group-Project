@@ -1,4 +1,5 @@
 package org.example;
+import java.io.FileWriter;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -65,6 +66,20 @@ public class JSONHandler {
 
         }
         return itemList;
+    }
+    /** This method takes all of the current orders in the system and
+     *  writes them into a single JSON file at the given file location.
+     * @param orders ArrayList of Order objects currently in memory
+     * @param fileLocation location where thee JSON file will be saved
+     */
+
+    public static void exportAllOrders(ArrayList<Order> orders, String fileLocation) {
+
+        JSONObject fullObj = new JSONObject(); //main JSON object for entire file
+        JSONArray ordersArray = new JSONArray(); //array holding orders to export
+
+        for (Order o : orders) {  //scanning eachorder & turing to JSON
+        }
     }
 
 }
