@@ -91,7 +91,18 @@ public class Order {
      * displayOrder prints the order to output
      */
     public void displayOrder() {
-        System.out.println(this.toString());
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("Order number: " + this.orderNumber);
+        sb.append("\nOrder type: " + this.type);
+        sb.append("\nOrder stage: " + this.stage);
+        sb.append("\nOrder date: " + this.date);
+        sb.append("\nItems: \n");
+        for (Item i : items) {
+            sb.append(i.stringForOrder());
+        }
+        sb.append("\nTotal cost of order: " + getTotalCost());
+
+        System.out.println(String.valueOf(sb));
     }
 
     /**
