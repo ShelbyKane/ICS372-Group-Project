@@ -63,7 +63,7 @@ public class Item {
         sb.append("\n\t"); //adding a new line then a tab so it fits neatly within the order
         sb.append(this.quantity);
         sb.append("\n\t");
-        sb.append(String.format("%02d", this.price));
+        sb.append(String.format("%.2f", this.price));
 
         return String.valueOf(sb);
     }
