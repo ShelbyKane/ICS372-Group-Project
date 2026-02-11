@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-    static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
         boolean sys_active = true;  // software will not terminate on its own
 
@@ -162,12 +162,33 @@ public class Main {
 
                     break;
 
-                case "5":   // Export (NEED THE EXPORT CLASS)
-                    System.out.println("-------------------- Export JSON File --------------------");
-//                    System.out.println("Enter q to return to main menu.\n");
+                case "5":
+                    System.out.println("-------------------- Export JSON File -------------------");
+                    System.out.println("There is " + orders.size() + " order(s) present.");
+                    System.out.print("a) Yes\nb) No (main menu)\n\nDo you wish to continue: ");
 
-                    System.out.println("the feature is not available at this moment.");
+                    temp = keyboard.nextLine(); // ask user for input
+
+                    if (temp.equalsIgnoreCase("b")) {  //if user wants to quit, go back to main menu
+                        System.out.println("Return to main menu.");
+                        break;
+                    } else if (temp.equalsIgnoreCase("a")) {
+                        if (orders.isEmpty()) {
+                            System.out.println("There are no orders to export.");
+                            break; //return to main menu
+                        }
+
+                        String exportPath = "orders_export.json"; //Name of file & File created in the project root directory
+                        JSONHandler.exportAllOrders(orders, exportPath);//Call the exportAllOrders method to write all orders to JSON
+
+                        //Export successful! User will get notification and the file will be created in the project root directory
+                        System.out.println("Exported " + orders.size() + " orders to " + exportPath);
+                    } else {
+                        System.out.println("There is no option: " + temp);
+                    }
+
                     break;
+
 
                 case "0":   // terminate program
                     System.out.println("------------------------- Exit -------------------------");
