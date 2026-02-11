@@ -17,31 +17,42 @@ public class JSONHandler {
      *
      * @param fileLocation String of directory for file to be parsed
      * @return Order object created from JSON file
+     * | null if the file isn't parsed properly
      */
     public static Order convertToOrder(String fileLocation){
 
         try (FileReader reader = new FileReader(fileLocation)){
+
             JSONParser parser = new JSONParser();
+            JSONObject fullFileObj = (JSONObject) parser.parse(reader);
+            JSONObject orderObj = (JSONObject) fullFileObj.get("order");
 
-            JSONObject fullOrderObj = (JSONObject) parser.parse(reader);
-            JSONObject orderObj = (JSONObject) fullOrderObj.get("order");
 
-            //Get order details
-            String type = (String) orderObj.get("type");
+            //Get object versions of order details
+            Object typeObj = orderObj.get("type");
+            Object dateObj = orderObj.get("order_date");
+            Object itemsObj = orderObj.get("items");
 
-            Date date = new Date(((Number) orderObj.get("order_date")).longValue());
-            Order order = new Order(type, date);
+            //Check Types and verify details are valid
+            String type = ((typeObj instanceof String)) ? (String) typeObj : "Not Available";
+            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
+
+            Date date = ((dateObj instanceof Number)) ? new Date(((Number)dateObj).longValue()) : new Date();
+
+            Order order = new Order(type, date);        //Begin Order creation
 
             //Get items, convert and place into order object before returning
-            JSONArray items = (JSONArray) orderObj.get("items");
+            JSONArray items = (itemsObj instanceof JSONArray) ? (JSONArray) itemsObj : new JSONArray();
             for(Item i : convertItems(items)){
                 order.addItem(i);
             }
+
             return order;
 
-
         } catch(IOException | ParseException e){
-            e.printStackTrace();
+            System.out.println("Parse Exception: There was an error reading the JSON file. " +
+                    "please confirm order is in correct format and try again");
+
         }
 
         return null;
@@ -54,13 +65,22 @@ public class JSONHandler {
      */
     private static ArrayList<Item> convertItems(JSONArray jsonItems){
         ArrayList<Item> itemList = new ArrayList<>();
-        for (Object object : jsonItems){
-            JSONObject item = (JSONObject) object;
-            String name = (String) item.get("name");
-            int quantity = ((Number) item.get("quantity")).intValue();
-            double price = (double) item.get("price");
 
-            //Fix when Item constructor is made:
+        for (Object object : jsonItems){
+
+            //Get objects for Item and its details
+            JSONObject item = (JSONObject) object;
+            Object nameObj = item.get("name");
+            Object quantityObj = item.get("quantity");
+            Object priceObj = item.get("price");
+
+            //Check type and set if invalid
+            //!Figure out new failsafe method?
+            String name = (nameObj instanceof String) ? (String) nameObj : "No Item name found";
+            int quantity = (quantityObj instanceof Number) ? ((Number) quantityObj).intValue() : 0;
+            double price = (priceObj instanceof Number) ? ((Number) priceObj).doubleValue() : 0.0;
+
+            //Create item and add to list
             Item nextItem = new Item(name, quantity, price);
             itemList.add(nextItem);
 
