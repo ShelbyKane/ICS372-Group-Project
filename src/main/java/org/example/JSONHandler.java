@@ -101,7 +101,7 @@ public class JSONHandler {
 
         try (FileWriter writer = new FileWriter(fileLocation)) { // writing the JSON to the file location
             writer.write(fullObj.toJSONString());
-        } catch (IOException e)
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
