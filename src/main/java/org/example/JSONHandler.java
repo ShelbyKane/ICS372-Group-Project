@@ -78,8 +78,33 @@ public class JSONHandler {
         JSONObject fullObj = new JSONObject(); //main JSON object for entire file
         JSONArray ordersArray = new JSONArray(); //array holding orders to export
 
-        for (Order o : orders) {  //scanning eachorder & turing to JSON
+        for (Order o : orders) {  //scanning each order & turning to JSON
+            JSONObject orderObj = new JSONObject(); //Creating JSON object for each order
+            orderObj.put("type", o.getType());
+            orderObj.put("order_date", o.getDate().getTime());
+            orderObj.put("stage", o.getStage());
+
+            JSONArray itemsArray = new JSONArray(); //array holding items for this order
+
+            for (Item item : o.getItems()) { //go thru each item in this order
+                JSONObject itemObj = new JSONObject(); //Creating JSON object for each item
+                itemObj.put("name", item.getName());
+                itemObj.put("quantity", item.getQuantity());
+                itemObj.put("price", item.getPrice());
+
+                itemsArray.add(itemObj); //add this item into the items list
+            }
+                orderObj.put("items", itemsArray); //link the items list onto the order JSON
+                ordersArray.add(orderObj);
+            }
+        fullObj.put("orders", ordersArray); //attach all orders to the main JSON object
+
+        try (FileWriter writer = new FileWriter(fileLocation)) { // writing the JSON to the file location
+            writer.write(fullObj.toJSONString());
+        } catch (IOException e)
+            e.printStackTrace();
         }
     }
 
 }
+
