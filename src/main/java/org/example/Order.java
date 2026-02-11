@@ -96,9 +96,9 @@ public class Order {
         sb.append("\nOrder type: " + this.type);
         sb.append("\nOrder stage: " + this.stage);
         sb.append("\nOrder date: " + this.date);
-        sb.append("\nItems: \n");
+        sb.append("\nItems: ");
         for (Item i : items) {
-            sb.append(i.stringForOrder());
+            sb.append("\n" + i.stringForOrder());
         }
         sb.append(String.format("\nTotal cost of order: %.2f", getTotalCost()));
 
