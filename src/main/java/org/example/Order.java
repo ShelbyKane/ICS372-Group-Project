@@ -100,7 +100,7 @@ public class Order {
         for (Item i : items) {
             sb.append(i.stringForOrder());
         }
-        sb.append("\nTotal cost of order: " + getTotalCost());
+        sb.append(String.format("\nTotal cost of order: %.2f", getTotalCost()));
 
         System.out.println(String.valueOf(sb));
     }
