@@ -1,0 +1,10 @@
+title Add Incoming Order
+
+UI->App: Request Import JSON File option
+App->UI: Prompt for file location
+UI->App: Provide File location
+alt Valid File
+    App->App: Store order
+    App->UI: Display Successful Import
+else Invalid File
+    App->UI: Display Error Message

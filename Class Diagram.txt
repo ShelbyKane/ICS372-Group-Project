@@ -1,0 +1,46 @@
+@startuml
+class JSONHandler{ 
+   {method} + Order convertToOrder(fileLocation)
+   {method} - List<Item> convertItems(jsonItemArray)
+   {method} + void exportAllOrders(orders, fileLocation)
+}
+
+class Order {
+   {field} - int orderIndex
+   {field} - int orderNumber
+   {field} - String type
+   {field} - List<Item> items
+   {field} - String stage
+   {field} - Date date
+   {method} + Order(type, date)
+   {method} + int getOrderNumber()
+   {method} + String getType()
+   {method} + String getStage()
+   {method} + List<Item> getItems()
+   {method} + Date getDate()
+   {method} + void addItem(Item i)
+   {method} + void startFulfilling()
+   {method} + void completeOrder()
+   {method} + double getTotalCost()
+   {method} + void displayOrder()
+   {method} + String toString()
+}
+
+class Item {
+   {field} - String name
+   {field} - int quantity
+   {field} - double price
+   {method} + Item(name, quantity, price)
+   {method} + String getName()
+   {method} + void setName(name)
+   {method} + int getQuantity()
+   {method} + void setQuantity(quantity)
+   {method} + double getPrice()
+   {method} + void setPrice(price)
+   {method} + double getTotal()
+   {method} + String toString()
+   {method} + String stringForOrder()
+}
+
+Order "1" --- "*" Item: has
+@endumls
