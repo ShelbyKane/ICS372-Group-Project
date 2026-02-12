@@ -113,7 +113,10 @@ public class Main {
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
                     System.out.println("-------------------- Display Orders --------------------");
                     System.out.println("Enter q to return to main menu.\n");
+                    System.out.println("Orders in options a, b, c display order's order id, total price, status/stage");
+                    System.out.println("Orders in options d, e, f display order's order id, type, status/stage, date, item(s), total price\n");
                     System.out.println("Order display options:\na) Completed orders\nb) Uncompleted orders\nc) All orders");
+                    System.out.println("d) Completed orders (detail)\ne) Uncompleted orders (detail)\nf) All orders (detail)");
                     System.out.print("\nPlease select an option: ");
                     temp = keyboard.nextLine();
                     System.out.println("---------------------------------------------------------");
@@ -142,21 +145,28 @@ public class Main {
 
                     File file_location = new File(temp);
 
-                    // user will get notification if import is successful or not
-                    if (file_location.exists()) {
-                        int current_idx = orders.size();
-                        orders.add(JSONHandler.convertToOrder(file_location.getAbsolutePath()));
+                    try (FileInputStream valid = new FileInputStream(file_location)) {
+                        Order new_order = JSONHandler.convertToOrder((file_location).getAbsolutePath());
 
-                        if (current_idx == 0 ) {
-                            index.put(String.valueOf(orders.getFirst().getOrderNumber()), 0);
+                        if (new_order != null) {
+                            int current_idx = orders.size();
+
+                            orders.add(new_order);
+                            if (current_idx == 0 ) {
+                                index.put(String.valueOf(orders.getFirst().getOrderNumber()), 0);
+
+                            } else {
+                                index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
+                            }
+
+                            System.out.println("Import is successful!");
 
                         } else {
-                            index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
+                            System.out.println("Import failed.");
                         }
 
-                        System.out.println("Import is successful!");
 
-                    } else {
+                    } catch (FileNotFoundException ex) {
                         System.out.println("Cannot find the file.");
                     }
 
@@ -200,6 +210,10 @@ public class Main {
                         sys_active = false;
 
                     } else {
+                        if (!temp.equalsIgnoreCase("b")) {
+                            System.out.println("---------------------------------------------------------");
+                            System.out.println("There is no option: " + temp);
+                        }
                         System.out.println("---------------------------------------------------------");
                         System.out.println("Return to main menu.");
                     }
@@ -250,7 +264,7 @@ public class Main {
             case "a":   // completed orders
                 for (Order i : list) {
                     if (i.getStage().equalsIgnoreCase("completed")) {
-                        System.out.printf("Order number: %d\tTotal cost: %.2f\n", i.getOrderNumber(), i.getTotalCost());
+                        System.out.printf("Order number: %d\tTotal cost: %.2f\tOrder status: %s\n", i.getOrderNumber(), i.getTotalCost(), i.getStage());
                         count += 1;
                     }
                 }
@@ -261,7 +275,7 @@ public class Main {
             case "b":   // uncompleted orders
                 for (Order i : list) {
                     if (!i.getStage().equalsIgnoreCase("completed")) {
-                        System.out.printf("Order number: %d\tTotal cost: %.2f\n", i.getOrderNumber(), i.getTotalCost());
+                        System.out.printf("Order number: %d\tTotal cost: %.2f\tOrder status: %s\n", i.getOrderNumber(), i.getTotalCost(), i.getStage());
                         count += 1;
                     }
                 }
@@ -273,6 +287,40 @@ public class Main {
                 for (Order i : list) {
                     System.out.printf("Order number: %d\tTotal cost: %.2f\tOrder status: %s\n", i.getOrderNumber(), i.getTotalCost(), i.getStage());
                     count += 1;
+                }
+
+                keyword = "all";
+                break;
+
+            case "d":   // completed orders DETAIL
+                for (Order i : list) {
+                    if (i.getStage().equalsIgnoreCase("completed")) {
+                        i.displayOrder();
+                        count += 1;
+                        System.out.print("---------------------------------------------------------");
+                    }
+                }
+
+                keyword = "completed";
+                break;
+
+            case "e":   // uncompleted orders DETAIL
+                for (Order i : list) {
+                    if (!i.getStage().equalsIgnoreCase("completed")) {
+                        i.displayOrder();
+                        count += 1;
+                        System.out.print("---------------------------------------------------------");
+                    }
+                }
+
+                keyword = "uncompleted";
+                break;
+
+            case "f":   // all orders DETAIL
+                for (Order i : list) {
+                    i.displayOrder();
+                    count += 1;
+                    System.out.print("---------------------------------------------------------");
                 }
 
                 keyword = "all";
