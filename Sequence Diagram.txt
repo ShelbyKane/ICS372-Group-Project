@@ -1,10 +1,121 @@
-title Add Incoming Order
+title Process Orders
 
-UI->App: Request Import JSON File option
-App->UI: Prompt for file location
-UI->App: Provide File location
-alt Valid File
-    App->App: Store order
-    App->UI: Display Successful Import
-else Invalid File
-    App->UI: Display Error Message
+Actor User
+participant UI
+participant JSONHandler
+participant Order
+participant Item
+
+UI->User: Prompt for Option Choice/Input
+
+User->UI: Option #0
+UI-->>User: Exits Program
+
+# !! account for q
+#alt press q
+#    UI->UI: go to main menu
+
+# alt Valid Input
+
+
+User->UI: Option #1 (Display Order in Detail)
+    UI->User: Request Order Number
+    User->UI: Give Order Number
+    alt Valid Order Number / Order Num Exists
+        UI->Order: orders.get(Order Number)
+        Order-->>UI: displayOrder()
+    else invalid order number
+        UI-->>UI: Cannot Find Order (returns to main menu)
+    end
+
+User->UI: Option #2 (Edit Order)
+    UI->User: Request Order Number
+    User->UI: Give Order Number
+    alt Valid Order Number / Order Num Exists
+        UI->Order: orders.get(Order Number)
+        Order-->>UI: displayOrder()
+
+        UI->User: Prompt User on Status Change
+        User->UI: Change Status to In-Progress - status_change()
+        UI->Order: Case A - order.startFulfilling()
+        Order-->>UI: Stage = In-Progress
+
+        User->UI: Change Status to Complete
+        opt If User Requests to Change Status from Incoming to Complete
+            UI->User: Confirm User Wants to Skip In-Progress Status
+            alt a) Yes
+                UI->UI: status_change(orders.get(order_num))
+                UI->Order: Case B - order.completeOrder();
+                Order-->>UI: Stage = Completed
+
+
+            else b) No
+                UI-->>User: Cancelled Change (returns to main menu)
+            end
+        end
+
+    else Invalid Order Number
+        UI-->>UI: Cannot Find Order (returns to main menu)
+    end
+
+
+User->UI: Option #3 (Display List of Orders)
+    UI->User: Prompt for Display Option
+    User->UI: Give Display Option
+
+    alt a) Completed Orders
+        loop each Order Object (i) in List
+            Order->UI: i.getStage()
+            opt If Order i == Completed
+                Order->UI: i.getOrderNumber()
+                Order->UI: i.getTotalCost()
+                UI->User: Display Order String
+                UI->UI: count++;
+            end
+
+        end
+
+    else b) Uncompleted Orders
+        loop each Order Object (i) in List
+            Order->UI: i.getStage()
+            opt If Order i != Completed
+                Order->UI: i.getOrderNumber()
+                Order->UI: i.getTotalCost()
+                UI->User: Display Order String
+                UI->UI: count++;
+            end
+
+        end
+    else c) All Orders
+        loop each Order Object (i) in List
+            Order->UI: i.getOrderNumber()
+            Order->UI: i.getTotalCost()
+            Order->UI: i.getStage()
+
+            UI->User: Display Order String
+            UI->UI: count++;
+       end
+    end
+
+
+User->UI: Option #4 (Import JSON File)
+UI->JSONHandler: Request Import JSON File option #4
+    JSONHandler->UI: Prompt for file location
+    UI->JSONHandler: Provide File location
+    alt Valid File
+        JSONHandler->JSONHandler: Store order
+        JSONHandler->UI: Display Successful Import
+    else Invalid File
+        JSONHandler->UI: Display Error Message
+
+    else Invalid Input
+    UI->User: "there is no option" and loop back to menu
+
+    end
+
+User->UI: Option #5 (Export JSON File)
+
+
+
+
+

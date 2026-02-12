@@ -21,7 +21,7 @@ public class Order {
         orderNumber = orderIndex++;
         this.type = type;
         this.date = date;
-        this.stage = "incoming"; //automatically sets the status as incomming
+        this.stage = "incoming"; //automatically sets the status as incoming
 
         items = new ArrayList<Item>();
 
@@ -63,7 +63,14 @@ public class Order {
      * Sets the stage to in progress
      */
     public void startFulfilling() {
-        stage = "in progress";
+        if (stage.equalsIgnoreCase("incoming")){
+            stage = "in progress";
+        }
+
+        else {
+            System.out.println("You cannot start fulfilling an order that is in stage " + stage + ".");
+        }
+
     }
 
     /**
