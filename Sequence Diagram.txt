@@ -11,11 +11,10 @@ UI->User: Prompt for Option Choice/Input
 User->UI: Option #0
 UI-->>User: Exits Program
 
-# !! account for q
-#alt press q
-#    UI->UI: go to main menu
 
-# alt Valid Input
+opt press q
+    User->UI: Return to Main Menu
+end
 
 
 User->UI: Option #1 (Display Order in Detail)
@@ -23,8 +22,9 @@ User->UI: Option #1 (Display Order in Detail)
     User->UI: Give Order Number
     alt Valid Order Number / Order Num Exists
         UI->Order: orders.get(Order Number)
+        Item-->>Order: stringForOrder()
         Order-->>UI: displayOrder()
-    else invalid order number
+    else Invalid Order Number
         UI-->>UI: Cannot Find Order (returns to main menu)
     end
 
@@ -33,6 +33,7 @@ User->UI: Option #2 (Edit Order)
     User->UI: Give Order Number
     alt Valid Order Number / Order Num Exists
         UI->Order: orders.get(Order Number)
+        Item-->>Order: stringForOrder()
         Order-->>UI: displayOrder()
 
         UI->User: Prompt User on Status Change
@@ -40,7 +41,7 @@ User->UI: Option #2 (Edit Order)
         UI->Order: Case A - order.startFulfilling()
         Order-->>UI: Stage = In-Progress
 
-        User->UI: Change Status to Complete
+        User->UI: Change Status to Complete - status_change()
         opt If User Requests to Change Status from Incoming to Complete
             UI->User: Confirm User Wants to Skip In-Progress Status
             alt a) Yes
@@ -64,56 +65,66 @@ User->UI: Option #3 (Display List of Orders)
     User->UI: Give Display Option
 
     alt a) Completed Orders
-        loop each Order Object (i) in List
-            Order->UI: i.getStage()
-            opt If Order i == Completed
-                Order->UI: i.getOrderNumber()
-                Order->UI: i.getTotalCost()
-                UI->User: Display Order String
-                UI->UI: count++;
-            end
-
+        loop each Order Object in List where order.getStage() = Completed
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
         end
 
     else b) Uncompleted Orders
-        loop each Order Object (i) in List
-            Order->UI: i.getStage()
-            opt If Order i != Completed
-                Order->UI: i.getOrderNumber()
-                Order->UI: i.getTotalCost()
-                UI->User: Display Order String
-                UI->UI: count++;
-            end
-
+        loop each Order Object in List where order.getStage() != Completed
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
         end
     else c) All Orders
-        loop each Order Object (i) in List
-            Order->UI: i.getOrderNumber()
-            Order->UI: i.getTotalCost()
-            Order->UI: i.getStage()
-
-            UI->User: Display Order String
-            UI->UI: count++;
+        loop each Order Object in List
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
        end
     end
 
 
 User->UI: Option #4 (Import JSON File)
-UI->JSONHandler: Request Import JSON File option #4
-    JSONHandler->UI: Prompt for file location
-    UI->JSONHandler: Provide File location
+#UI->JSONHandler: Request Import JSON File option #4
+    UI->User: Prompt for file location
+    User->UI: Provide File Location
+
+ #   UI->JSONHandler: Provide File location
     alt Valid File
-        JSONHandler->JSONHandler: Store order
-        JSONHandler->UI: Display Successful Import
+        UI->JSONHandler: convertToOrder()
+        JSONHandler->Order: new Order(type, date)
+
+        loop For each Item in Order
+            JSONHandler->Order: order.addItem()
+        end
+
+        JSONHandler-->>UI: Return Order Object (new_order)
+        UI-->>User: Display Successful Import
     else Invalid File
-        JSONHandler->UI: Display Error Message
+        JSONHandler-->>UI: Display Error Message
 
     else Invalid Input
-    UI->User: "there is no option" and loop back to menu
+        UI-->>User: Import Failed
+    #UI-->>User: "there is no option" (return to main menu)
 
     end
 
 User->UI: Option #5 (Export JSON File)
+UI->JSONHandler: Request Export JSON File option #5
+    alt There is at least one order
+
+        loop
+            JSONHandler->Order: Read each item and create JSON object for each order
+            JSONHandler->JSONHandler: add JSON object to array
+        end
+        JSONHandler->JSONHandler: Write array to file location
+
+    else Orders is empty
+        UI->User: There are no orders to export
+
+    end
 
 
 
