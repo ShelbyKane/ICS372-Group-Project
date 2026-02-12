@@ -1,4 +1,5 @@
 @startuml
+
 class Order {
    {field} - int orderIndex
    {field} - int orderNumber
@@ -37,4 +38,4 @@ class Item {
 }
 
 Order "1" --- "*" Item: has
-@enduml
+@endumls
