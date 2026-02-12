@@ -1,10 +1,4 @@
 @startuml
-class JSONHandler{ 
-   {method} + Order convertToOrder(fileLocation)
-   {method} - List<Item> convertItems(jsonItemArray)
-   {method} + void exportAllOrders(orders, fileLocation)
-}
-
 class Order {
    {field} - int orderIndex
    {field} - int orderNumber
@@ -43,4 +37,4 @@ class Item {
 }
 
 Order "1" --- "*" Item: has
-@endumls
+@enduml
