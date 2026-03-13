@@ -1,10 +1,132 @@
-title Add Incoming Order
+title Process Orders
 
-UI->App: Request Import JSON File option
-App->UI: Prompt for file location
-UI->App: Provide File location
-alt Valid File
-    App->App: Store order
-    App->UI: Display Successful Import
-else Invalid File
-    App->UI: Display Error Message
+Actor User
+participant UI
+participant JSONHandler
+participant Order
+participant Item
+
+UI->User: Prompt for Option Choice/Input
+
+User->UI: Option #0
+UI-->>User: Exits Program
+
+
+opt press q
+    User->UI: Return to Main Menu
+end
+
+
+User->UI: Option #1 (Display Order in Detail)
+    UI->User: Request Order Number
+    User->UI: Give Order Number
+    alt Valid Order Number / Order Num Exists
+        UI->Order: orders.get(Order Number)
+        Item-->>Order: stringForOrder()
+        Order-->>UI: displayOrder()
+    else Invalid Order Number
+        UI-->>UI: Cannot Find Order (returns to main menu)
+    end
+
+User->UI: Option #2 (Edit Order)
+    UI->User: Request Order Number
+    User->UI: Give Order Number
+    alt Valid Order Number / Order Num Exists
+        UI->Order: orders.get(Order Number)
+        Item-->>Order: stringForOrder()
+        Order-->>UI: displayOrder()
+
+        UI->User: Prompt User on Status Change
+        User->UI: Change Status to In-Progress - status_change()
+        UI->Order: Case A - order.startFulfilling()
+        Order-->>UI: Stage = In-Progress
+
+        User->UI: Change Status to Complete - status_change()
+        opt If User Requests to Change Status from Incoming to Complete
+            UI->User: Confirm User Wants to Skip In-Progress Status
+            alt a) Yes
+                UI->UI: status_change(orders.get(order_num))
+                UI->Order: Case B - order.completeOrder();
+                Order-->>UI: Stage = Completed
+
+
+            else b) No
+                UI-->>User: Cancelled Change (returns to main menu)
+            end
+        end
+
+    else Invalid Order Number
+        UI-->>UI: Cannot Find Order (returns to main menu)
+    end
+
+
+User->UI: Option #3 (Display List of Orders)
+    UI->User: Prompt for Display Option
+    User->UI: Give Display Option
+
+    alt a) Completed Orders
+        loop each Order Object in List where order.getStage() = Completed
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
+        end
+
+    else b) Uncompleted Orders
+        loop each Order Object in List where order.getStage() != Completed
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
+        end
+    else c) All Orders
+        loop each Order Object in List
+            Order-->>UI: order.getOrderNumber(), order.getTotalCost()
+            Item-->>Order: stringForOrder()
+            Order-->>UI: displayOrder()
+       end
+    end
+
+
+User->UI: Option #4 (Import JSON File)
+#UI->JSONHandler: Request Import JSON File option #4
+    UI->User: Prompt for file location
+    User->UI: Provide File Location
+
+ #   UI->JSONHandler: Provide File location
+    alt Valid File
+        UI->JSONHandler: convertToOrder()
+        JSONHandler->Order: new Order(type, date)
+
+        loop For each Item in Order
+            JSONHandler->Order: order.addItem()
+        end
+
+        JSONHandler-->>UI: Return Order Object (new_order)
+        UI-->>User: Display Successful Import
+    else Invalid File
+        JSONHandler-->>UI: Display Error Message
+
+    else Invalid Input
+        UI-->>User: Import Failed
+    #UI-->>User: "there is no option" (return to main menu)
+
+    end
+
+User->UI: Option #5 (Export JSON File)
+UI->JSONHandler: Request Export JSON File option #5
+    alt There is at least one order
+
+        loop
+            JSONHandler->Order: Read each item and create JSON object for each order
+            JSONHandler->JSONHandler: add JSON object to array
+        end
+        JSONHandler->JSONHandler: Write array to file location
+
+    else Orders is empty
+        UI->User: There are no orders to export
+
+    end
+
+
+
+
+

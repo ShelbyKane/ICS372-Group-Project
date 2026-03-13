@@ -7,7 +7,7 @@ public class Order {
 
     private static int orderIndex = 0; //order number, static, incremented each time constructor is called
     private int orderNumber; //identifying number for the orders
-    private String type; //type of order, can be either pick up or ship
+    private String type; //type of order, can be either pick up or ship or direct delivery
     private ArrayList<Item> items; //list of items in the order
     private String stage; //stage order is in, can be incoming, fulfilling or completed
     private Date date; //date order was placed

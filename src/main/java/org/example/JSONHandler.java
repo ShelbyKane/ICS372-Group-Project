@@ -49,7 +49,7 @@ public class JSONHandler {
 
             return order;
 
-        } catch(IOException | ParseException e){
+        } catch(IOException | ParseException | NullPointerException e){
             System.out.println("Parse Exception: There was an error reading the JSON file. " +
                     "please confirm order is in correct format and try again");
 

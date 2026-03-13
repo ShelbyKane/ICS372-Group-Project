@@ -1,9 +1,4 @@
 @startuml
-class JSONHandler{ 
-   {method} + Order convertToOrder(fileLocation)
-   {method} - List<Item> convertItems(jsonItemArray)
-   {method} + void exportAllOrders(orders, fileLocation)
-}
 
 class Order {
    {field} - int orderIndex
