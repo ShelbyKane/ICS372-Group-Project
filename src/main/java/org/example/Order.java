@@ -1,6 +1,7 @@
 package org.example;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.*;
 
 public class Order {
 
@@ -10,6 +11,10 @@ public class Order {
     private ArrayList<Item> items; //list of items in the order
     private String stage; //stage order is in, can be incoming, fulfilling or completed
     private Date date; //date order was placed
+
+    //Added for project 2/////////////////////
+    private int warehouseID;
+    private String source;
 
 
     /**
@@ -22,6 +27,7 @@ public class Order {
         this.type = type;
         this.date = date;
         this.stage = "incoming"; //automatically sets the status as incoming
+        this.warehouseID = -1;
 
         items = new ArrayList<Item>();
 
@@ -60,11 +66,29 @@ public class Order {
 
     /**
      * This method is for when an employee starts fulfilling the order
+     * It will ask the user to enter the warehouse ID for the warehouse that will be fulfilling the order
+     * If an invalid warehouseID is entered, it will keep asking them to reenter until a valid warehouse ID is entered
      * Sets the stage to in progress
      */
     public void startFulfilling() {
         if (stage.equalsIgnoreCase("incoming")){
+
+
+            Scanner keyboard = new Scanner(System.in);
+            System.out.print("Enter warehouse nubmer: ");
+            String warehouse = keyboard.nextLine();
+
+            //if the keyboard ID is not either 1, 2, or 3, ask the user to enter a valid warehouse ID
+            while ( !warehouse.equals("1") || !warehouse.equals("2") || !warehouse.equals("3") ){
+                System.out.print("Please enter a valid warehouse ID: ");
+                warehouse = keyboard.nextLine();
+            }
+
+            warehouseID = Integer.parseInt(warehouse);
+
             stage = "in progress";
+
+            System.out.println("Order status changed from incoming to in progress.");
         }
 
         else {
@@ -75,10 +99,58 @@ public class Order {
 
     /**
      * This method is for when an employee completes an order
+     * If the order is not currently in progress, it will not change the status, and will inform user
      * Sets the stage to completed
      */
     public void completeOrder() {
-        stage = "completed";
+
+        if (stage.equals("in progress")){
+            stage = "completed";
+            System.out.println("Order status changed from in progress to completed. ");
+        }
+
+        else {
+            System.out.println("You cannot complete an order that is not currently in progress. ");
+        }
+    }
+
+    /**
+     * This sets the stage to canceled
+     */
+    public void cancelOrder(){
+
+        if (stage.equals("completed")){
+            System.out.println("You cannot cancel an order that has already been completed. ");
+        }
+        else {
+            stage = "canceled";
+            System.out.println("The order has been canceled. ");
+        }
+
+    }
+
+    public void reinstateOrder() {
+        if (stage.equals("canceled")){
+            Scanner keyboard = new Scanner(System.in);
+            System.out.print("Enter warehouse nubmer: ");
+            String warehouse = keyboard.nextLine();
+
+            //if the warehouse ID is not either 1, 2, or 3, ask the user to enter a valid warehouse ID
+            while ( !warehouse.equals("1") || !warehouse.equals("2") || !warehouse.equals("3") ){
+                System.out.print("Please enter a valid warehouse ID: ");
+                warehouse = keyboard.nextLine();
+            }
+
+            warehouseID = Integer.parseInt(warehouse);
+
+            stage = "in progress";
+
+            System.out.println("Order status changed from canceled to in progress.");
+        }
+
+        else{
+            System.out.println("You cannot reinstate an order that is not currently canceled. ");
+        }
     }
 
     /**
