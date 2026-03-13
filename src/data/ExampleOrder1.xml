@@ -1,0 +1,30 @@
+<Orders>
+	<Order id="485">
+		<OrderStage>Canceled</OrderStage>
+		<OrderType>Delivery</OrderType>
+		<Item type="Rubber duck">
+			<Price>13.45</Price>
+			<Quantity>2</Quantity>
+		</Item>
+		<Item type="Soap">
+			<Price>5.25</Price>
+			<Quantity>2</Quantity>
+		</Item>
+		<Item type="Soap">
+			<Price>5.25</Price>
+			<Quantity>2</Quantity>
+		</Item>
+		<Item type="Paper Towel Roll">
+			<Price unit="dollars">8.99</Price>
+			<Quantity>1</Quantity>
+		</Item>
+	</Order>
+	<Order>
+		<OrderType>Pick-Up</OrderType>
+		<OrderDate>01/05/2024</OrderDate>
+		<Item type="Paper Towel Roll">
+			<Price>5.00</Price>
+			<Quantity>10</Quantity>
+		</Item>
+	</Order>
+</Orders>

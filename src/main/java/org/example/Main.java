@@ -1,12 +1,15 @@
 package org.example;
 
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 
         boolean sys_active = true;  // software will not terminate on its own
 
