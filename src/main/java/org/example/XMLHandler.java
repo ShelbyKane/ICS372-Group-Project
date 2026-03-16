@@ -7,10 +7,19 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.io.FileWriter;
 import java.util.ArrayList;
 //import org.json.simple.JSONArray;
 
 import javax.xml.parsers.ParserConfigurationException;      // For XML Parser Errors (misconfiguration)
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.xml.sax.SAXException;                            // For XML Data Errors
 import java.io.IOException;
 
@@ -26,6 +35,8 @@ Feature 2) Export for every change
 Feature 5) import automatically in the background
  */
 /*  Questions:
+    - Should an XML / JSON file only have one order, or multiple orders? !!!
+
     - If saving orders and what stage they're in, then files might have a stage tag (but they might also not).  Do we default to "incoming" if no orderStage tag?
         Guessing yes. Added functionality for this.
 
@@ -66,13 +77,14 @@ public class XMLHandler {
     //String fileLoc = System.getProperty("user.dir") + "\\src\\data\\ExampleOrder1.xml";
 
     // Convert XML File to Orders
-    public static void convertToXMLOrder(/*String fileLocation*/) throws ParserConfigurationException, SAXException, IOException {
+    public static ArrayList<Order> convertXMLToOrders(/*String fileLocation*/) throws ParserConfigurationException, SAXException, IOException {
         //System.out.println("Testing convertToXMLOrder \n -----------");                                               //testing
         int orderNumber;                                    // ID num for orders. <Order id = "__">
         String orderStage;                                  // Stage order is in. Incoming, Fulfilling, Completed, Canceled. <OrderStage>__</OrderStage>
         String orderType;                                   // Pick-Up, Ship, Delivery. <OrderType>__</OrderType>
         LocalDate orderDate;//= new Date();                 // Date order was placed. // !!! Use localdate?
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);                 // IF using LocalDate; formatter determines how to parse (and display?) dates.
+        ArrayList<Order> orderList = new ArrayList<>();
 
         // Create factory object > Create builder object > Use builder to parse file
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -132,17 +144,20 @@ public class XMLHandler {
                 //  --------------------------------------------
                 NodeList xmlItems = element.getElementsByTagName("Item");
 
-                for(Item itm : convertXMLItems(xmlItems)){
+                for(Item itm : convertXMLToItems(xmlItems)){
                     order.addItem(itm);
                 }
+                orderList.add(order);
                 //System.out.println(order);                                                                            // testing
+
             }
            // System.out.println("------------------------");                                                           // testing
         }
+        return orderList;
     }
 
     // Convert XML File to Items
-    private static ArrayList<Item> convertXMLItems(NodeList xmlItems){
+    private static ArrayList<Item> convertXMLToItems(NodeList xmlItems){
         //System.out.println("\n=== \n Testing convertXMLItems \n ------------");                                       //testing
         ArrayList<Item> itemList = new ArrayList<>();
         String itemName;                // <Item type="__">
