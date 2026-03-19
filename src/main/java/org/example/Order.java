@@ -67,6 +67,10 @@ public class Order {
         return date;
     }
 
+    public void setStage(String s) {
+        this.stage = s;
+    }
+
 
     /**
      * addItem adds an item to the list of items
