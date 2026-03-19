@@ -34,6 +34,18 @@ public class Order {
 
     }
 
+    // Izzy - Draft. Adding an Order constructor with more detail (need this to track changes to orders over time, and to account for XML files having specified order IDs)
+    // NOTE: Writing this w/ XMLHandler in mind. Need to ensure this works with JSONHandler
+    public Order(int orderNum, String type, String stage, Date date) {
+        this.orderNumber = ((orderNum > -1)) ? orderNum : orderIndex++;             // Enter given order ID if applicable; if there is no ID (-1), then use orderIndex++.
+        this.type = type;                                                           // !! XMLHandler defaults to "Pick-Up" - not sure if this is correct ??
+        this.stage = stage;                                                         // XMLHandler defaults to "Incoming" if orderType not found in XML file
+        this.date = date;                                                           // XMLHanlder defaults to today if no date given.
+        this.warehouseID = -1;                                                      // !! Note: Need to handle files having a warehouse ID
+
+        items = new ArrayList<Item>();
+    }
+
     //Getters ///////////////////////////////////////////////////////////
     public int getOrderNumber() {
         return orderNumber;

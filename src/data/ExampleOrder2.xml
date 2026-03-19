@@ -1,0 +1,20 @@
+<Orders>
+	<Order>
+		<Item type="Volleyball">
+			<Price>12.10</Price>
+			<Quantity>5</Quantity>
+		</Item>
+		<Item type="TV">
+			<Price unit="dollars">99.99</Price>
+			<Quantity>1</Quantity>
+		</Item>
+	</Order>
+	<Order>
+		<OrderType>Pick-Up</OrderType>
+		<OrderDate>01/05/2024</OrderDate>
+		<Item type="Paper Towel Roll">
+			<Price>5.00</Price>
+			<Quantity>10</Quantity>
+		</Item>
+	</Order>
+</Orders>

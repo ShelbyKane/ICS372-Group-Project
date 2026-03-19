@@ -1,14 +1,15 @@
 <Orders>
-	<Order id="485">
-		<OrderStage>Canceled</OrderStage>
-		<OrderType>Delivery</OrderType>
+	<Order>
+		<OrderStage>In-Progress</OrderStage>
+		<OrderType>Pick-Up</OrderType>
+		<OrderDate>01/03/2020</OrderDate>
 		<Item type="Rubber duck">
 			<Price>13.45</Price>
 			<Quantity>2</Quantity>
 		</Item>
-		<Item type="Soap">
-			<Price>5.25</Price>
-			<Quantity>2</Quantity>
+		<Item type="soap">
+			<Price>70.00</Price>
+			<Quantity>3000</Quantity>
 		</Item>
 		<Item type="Soap">
 			<Price>5.25</Price>

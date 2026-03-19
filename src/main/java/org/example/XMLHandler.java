@@ -9,6 +9,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 //import org.json.simple.JSONArray;
 
@@ -58,38 +60,29 @@ Feature 5) import automatically in the background
             - Takes file, if .json > JSON Handler; if .xml > XML Handler
 
     Import: Largely done. Might need minor changes depending on design.
-        - Need Order to be able to create objects with additional details (eg orderStage, orderNumber)
-                - orderStage: Default to incoming; take in different stage if already set
-                - orderNumber: Default to incrementing based on Order class's orderIndex; take in different number if already set
-        - Need Order to be able to edit objects
-        ~ Add Functionality to loop through anything in working directory\src\data?  This can also be handled outside of the handlers (make a loop that runs __ handler each time)
+        - !! Add functionality for if returning null order (no file? no relevant nodes in file?)
+        - Do we need Order / Item setters (for when importing a file)? Maybe not
 
-    Export:
-        - Create export functionality
-        - Create functionality that allows auto-changes >> file. Needs to be flexible to any change. Could:
-                - do override functions
-                - make a function that always changes everything (this seems prone to errors?)
-                - make a function that takes everything in; updates where old object data doesn't match new data ?? ?
  */
 
 public class XMLHandler {
-    static String fileLoc = ".\\src\\data\\ExampleOrder1.xml";       // File location - !!! Update to a folder to loop through? Make a parameter? (likely latter)
+    //static String fileLoc = ".\\src\\data\\ExampleOrder1.xml";       // File location - !!! Update to a folder to loop through? Make a parameter? (likely latter)
     //String fileLoc = System.getProperty("user.dir") + "\\src\\data\\ExampleOrder1.xml";
 
-    // Convert XML File to Orders
-    public static ArrayList<Order> convertXMLToOrders(/*String fileLocation*/) throws ParserConfigurationException, SAXException, IOException {
+    // Convert XML File to Order
+    // !!! Note: Currently assuming each method call takes in 1 order / each file only has 1 order
+    public static Order convertXMLToOrder(String fileLocation) throws ParserConfigurationException, SAXException, IOException {
         //System.out.println("Testing convertToXMLOrder \n -----------");                                               //testing
         int orderNumber;                                    // ID num for orders. <Order id = "__">
         String orderStage;                                  // Stage order is in. Incoming, Fulfilling, Completed, Canceled. <OrderStage>__</OrderStage>
         String orderType;                                   // Pick-Up, Ship, Delivery. <OrderType>__</OrderType>
         LocalDate orderDate;//= new Date();                 // Date order was placed. // !!! Use localdate?
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);                 // IF using LocalDate; formatter determines how to parse (and display?) dates.
-        ArrayList<Order> orderList = new ArrayList<>();
 
         // Create factory object > Create builder object > Use builder to parse file
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(fileLoc);
+        Document doc = builder.parse(fileLocation);
 
         // Get first element node in doc (The root node. e.g. <Orders> node) > Get list of all child nodes
         Element root = doc.getDocumentElement();
@@ -109,18 +102,21 @@ public class XMLHandler {
 
                 // Get Order Data
                 // ----------------------
-                // !!! Should there be a default if orderType is not given?
-                orderType = element.getElementsByTagName("OrderType").item(0).getTextContent();                   // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
+                //!!!!orderType = element.getElementsByTagName("OrderType").item(0).getTextContent();                   // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
 
                 // Optional Nodes
                 // Get length of value/NodeList
                 int orderNumSize = element.getAttribute("id").length();
                 NodeList orderStageList = element.getElementsByTagName("OrderStage");
+                NodeList orderTypeList = element.getElementsByTagName("OrderType");
                 NodeList orderDateList =  element.getElementsByTagName("OrderDate");
 
                 // If length of value/NodeList > 0, then Get Found Value. Else, Set Default Value
                 orderNumber = ((orderNumSize > 0)) ? Integer.parseInt(element.getAttribute("id")) : -1;           // NOTE: orderNumber is a value within an attribute tag. Get value from there.
                 orderStage = ((orderStageList.getLength() > 0)) ?  orderStageList.item(0).getTextContent() : "Incoming";
+                orderType = ((orderTypeList.getLength() > 0)) ? orderTypeList.item(0).getTextContent() : "Pick-Up";    // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
+                // !!! Check: Should there be a default for orderType?
+
 
                 if (orderDateList.getLength() > 0) {
                     String newDate = orderDateList.item(0).getTextContent();
@@ -132,7 +128,7 @@ public class XMLHandler {
                 // Create New Order Object
                 // !!!! use date instead of LocalDate?
                 Date orderDate2 = Date.from(orderDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                Order order = new Order(orderType, orderDate2);
+                Order order = new Order(orderNumber, orderType, orderStage, orderDate2);
 
                 /*System.out.println("orderNumber: " + orderNumber);                                                    // testing
                 System.out.println("orderType: " + orderType);
@@ -147,13 +143,14 @@ public class XMLHandler {
                 for(Item itm : convertXMLToItems(xmlItems)){
                     order.addItem(itm);
                 }
-                orderList.add(order);
+                //orderList.add(order);
                 //System.out.println(order);                                                                            // testing
 
+                return order;
             }
            // System.out.println("------------------------");                                                           // testing
         }
-        return orderList;
+        return null;
     }
 
     // Convert XML File to Items
@@ -186,5 +183,81 @@ public class XMLHandler {
             }
         }
         return itemList;
+    }
+
+
+    // !!! NOTE: Currently assuming we are exporting 1 order per file
+    public static void exportXMLOrder(Order o, String fileLocation) throws TransformerException, ParserConfigurationException {
+        //System.out.println("Testing exportALlXMLOrders");
+        //String exportFileLoc = ".\\src\\data\\exampleExport.xml";
+        // Date Format
+        String pattern = "MM/dd/yyyy";
+        DateFormat df = new SimpleDateFormat(pattern);
+        /*String strOrderDate = df.format(o.getDate());*/
+
+        // Create factory object > Create builder object > Use builder to write file
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.newDocument();
+
+        // Create Root Element <Orders>
+        Element root = doc.createElement("Orders");
+        doc.appendChild(root);
+
+        // Order Data
+        //------------
+        // Create Order Element w/ orderNumber
+        Element order = doc.createElement("Order");
+        order.setAttribute("id", String.valueOf(o.getOrderNumber()));
+
+        // OrderStage (eg Incoming, Completed)
+        Element orderStage = doc.createElement("OrderStage");
+        orderStage.appendChild(doc.createTextNode(o.getStage()));
+        order.appendChild(orderStage);
+
+        // OrderType (eg Delivery, Pick-up)
+        Element orderType = doc.createElement("OrderType");
+        orderType.appendChild(doc.createTextNode(o.getType()));
+        order.appendChild(orderType);
+
+        // OrderDate (formatted as "MM/dd/yyyy")
+        Element orderDate = doc.createElement("OrderDate");
+        orderDate.appendChild(doc.createTextNode(df.format(o.getDate())));
+        order.appendChild(orderDate);
+
+        // Item Data
+        //------------
+        ArrayList<Item> itemList = o.getItems();
+        for(Item i : itemList){
+            // Create Item Element w/ Type (itemName)
+            Element item = doc.createElement("Item");
+            item.setAttribute("type", i.getName());
+
+            // Item Price
+            Element price = doc.createElement("Price");
+            price.appendChild(doc.createTextNode(String.valueOf(i.getPrice())));
+            item.appendChild(price);
+            // !!! price unit dollars? do we need to check / handle currency?
+
+            // Item Quantity
+            Element quantity = doc.createElement("Quantity");
+            quantity.appendChild(doc.createTextNode(String.valueOf(i.getQuantity())));
+            item.appendChild(quantity);
+
+            // Add <Item> to its parent node/tag <Order>
+            order.appendChild(item);
+        }
+
+        // Append <Order> node to root node <Orders>
+        root.appendChild(order);
+
+        // Write to XML File
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+
+        // Specify File Location
+        StreamResult output = new StreamResult(fileLocation);
+        transformer.transform(source, output);
     }
 }
