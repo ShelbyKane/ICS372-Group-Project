@@ -131,12 +131,8 @@ public class OrderList {
             }
 
 
-        } catch (ParserConfigurationException ex) {
+        } catch (ParserConfigurationException | IOException |  SAXException ex) {
             System.out.println("OrderList error 2");
-        } catch (IOException ex2) {
-            System.out.println("OrderList error 3");
-        } catch (SAXException ex2) {
-            System.out.println("OrderList error 4");
         }
     }
 
@@ -160,14 +156,12 @@ public class OrderList {
                 //System.out.println("Import is successful!");
 
             } else {
-                System.out.println("OrderList error 5");
+                System.out.println("OrderList error 3");
             }
 
 
-        } catch (FileNotFoundException ex) {
-            System.out.println("OrderList error 6");
-        } catch (IOException ex2) {
-            System.out.println("OrderList error 7");
+        } catch (IOException ex) {
+            System.out.println("OrderList error 4");
         }
     }
 
