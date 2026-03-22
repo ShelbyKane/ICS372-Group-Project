@@ -11,7 +11,7 @@ public class Main {
         boolean sys_active = true;  // software will not terminate on its own
 
         Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
-        String temp; // store input
+        String temp;                                // store input
 
         OrderList order_list = new OrderList();
         String order_id;
@@ -32,7 +32,7 @@ public class Main {
                     System.out.print("Enter order id: ");
                     temp = keyboard.nextLine();
 
-                    if (temp.equalsIgnoreCase("*")) break;              // exit
+                    if (temp.equalsIgnoreCase("*")) break;              // back to main menu
                     if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
 
                     order_list.view(temp);
@@ -46,7 +46,7 @@ public class Main {
                     System.out.print("Enter order id: ");
                     temp = keyboard.nextLine();
 
-                    if (temp.equals("*")) break;              // exit
+                    if (temp.equals("*")) break;                                    // back to main menu
                     if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
                     order_id = temp;
                     order_list.view(order_id);
@@ -70,7 +70,7 @@ public class Main {
                     System.out.println("*: main menu\nelse: error and still back to main menu");
                     temp = keyboard.nextLine();
 
-                    if (temp.equalsIgnoreCase("*")) break;              // exit
+                    if (temp.equalsIgnoreCase("*")) break;              // back to main menu
                     if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
 
                     temp = keyboard.nextLine();
@@ -85,6 +85,7 @@ public class Main {
                     }
                     break;
 
+                    // may be removed from main menu
                 case "4":   // import json file
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
                     System.out.println("Import JSON file.");
@@ -106,9 +107,9 @@ public class Main {
 
                     if (temp.equalsIgnoreCase("*")) break;  // back to main menu
 
-                    if (temp.equals("1")) {         // export orders into a JSON file
+                    if (temp.equals("1")) {                             // export orders into a JSON file
                         if (!order_list.is_empty()) {
-                            String exportPath = "orders_export.json"; //Name of file & File created in the project root directory
+                            String exportPath = "orders_export.json";   //Name of file & File created in the project root directory
                             order_list.export_json_file(exportPath);
                         }
                     }
