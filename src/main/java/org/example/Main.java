@@ -54,10 +54,10 @@ public class Main {
                     System.out.println("Enter 1: in-progress\n2: completed\n3: cancelled\n4: reinstate");
                     temp = keyboard.nextLine();
                     switch (temp) {
-                        case "1" -> order_list.edit_stage_processing(order_id);
-                        case "2" -> order_list.edit_stage_completed(order_id);
-                        case "3" -> order_list.edit_stage_canceled(order_id);
-                        case "4" -> order_list.edit_stage_reinstate(order_id);
+                        case "1" -> order_list.get_order(order_id).startFulfilling();
+                        case "2" -> order_list.get_order(order_id).completeOrder();
+                        case "3" -> order_list.get_order(order_id).cancelOrder();
+                        case "4" -> order_list.get_order(order_id).reinstateOrder();
                         default -> System.out.println("Error");
                     }
                     break;
