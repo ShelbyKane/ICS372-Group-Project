@@ -89,7 +89,6 @@ public class Main {
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
                     if (order_list.is_empty()) break;   // no order found
 
-                    temp = keyboard.nextLine();
                     switch (temp) {
                         case "1" -> order_list.view_completed_orders();
                         case "2" -> order_list.view_uncompleted_orders();
