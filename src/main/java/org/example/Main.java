@@ -18,7 +18,9 @@ public class Main {
                 Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
                 String temp;                                // store input
 
-                OrderList order_list = new OrderList();
+                OrderList order_list = new OrderList(backups.get_dir());
+        ReloadFiles.start_reload(order_list, backups.get_dir());
+
                 Timer timer = new Timer();  // create timer
                 timer.scheduleAtFixedRate(new TimerTask() {  // run repeatedly
                     @Override
