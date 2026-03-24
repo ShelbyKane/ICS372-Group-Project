@@ -60,22 +60,24 @@ public class JSONHandler {
     }
 
 
-    public static Order objectToOrder(JSONObject orderObj){
+    private static Order objectToOrder(Object obj){
+
+        JSONObject orderObj = (JSONObject) obj;
         Object typeObj = orderObj.get("type");
         Object dateObj = orderObj.get("order_date");
         Object itemsObj = orderObj.get("items");
         Object stageObj = orderObj.get("stage");
-        Object orderNum = orderObj.get("orderNum")
-        //Add line for stageObj
-        //Add line for orderNum
+        Object orderNumObj = orderObj.get("orderNum");
+
 
         //Check Types and verify details are valid
         String type = ((typeObj instanceof String)) ? (String) typeObj : "Not Available";
 //            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
-
+        String stage = ((stageObj instanceof String)) ? (String) stageObj : "incoming";
+        int orderNum = (orderNumObj instanceof Number) ? ((Number) orderNumObj).intValue() : -1;
         Date date = ((dateObj instanceof Number)) ? new Date(((Number)dateObj).longValue()) : new Date();
 
-        Order order = new Order(orderNum, type, stage, date, );        //Begin Order creation
+        Order order = new Order(orderNum, type, stage, date);        //Begin Order creation
 
         //Get items, convert and place into order object before returning
         JSONArray items = (itemsObj instanceof JSONArray) ? (JSONArray) itemsObj : new JSONArray();
@@ -101,15 +103,17 @@ public class JSONHandler {
                     "please confirm order is in correct format and try again");
 
         }
+        return null;
     }
     public static ArrayList<Order> importPreviousState(String fileLocation){
         ArrayList<Order> orderList = new ArrayList<>();
 
         try (FileReader reader = new FileReader(fileLocation)){
             JSONParser parser = new JSONParser();
-            JSONArray fullFileObj = (JSONArray) parser.parse(reader);
+            JSONObject fullFileObj = (JSONObject) parser.parse(reader);
+            JSONArray listObj = (JSONArray) fullFileObj.get("orders");
 
-            for(JSONObject obj : fullFileObj){
+            for(Object obj : listObj){
                 orderList.add(objectToOrder(obj));
             }
 
@@ -168,7 +172,7 @@ public class JSONHandler {
             orderObj.put("type", o.getType());
             orderObj.put("order_date", o.getDate().getTime());
             orderObj.put("stage", o.getStage());
-
+            orderObj.put("orderNum", o.getOrderNumber());
 
             JSONArray itemsArray = new JSONArray(); //array holding items for this order
 
