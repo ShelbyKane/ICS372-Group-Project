@@ -1,0 +1,22 @@
+<order>
+    <order_date>1515354694451</order_date>
+    <stage>incoming</stage>
+    <type>ship</type>
+    <items>
+        <item>
+            <name>Prada bag</name>
+            <quantity>1</quantity>
+            <price>1200.00</price>
+        </item>
+        <item>
+            <name>Gucci bag</name>
+            <quantity>2</quantity>
+            <price>950.00</price>
+        </item>
+        <item>
+            <name>Fendi bag</name>
+            <quantity>1</quantity>
+            <price>1100.00</price>
+        </item>
+    </items>
+</order>

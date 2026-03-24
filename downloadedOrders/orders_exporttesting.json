@@ -1,0 +1,24 @@
+{
+  "order": {
+    "order_date": 1515354694451,
+    "stage": "incoming",
+    "type": "ship",
+    "items": [
+      {
+        "quantity": 1,
+        "price": 1200.00,
+        "name": "Prada bag"
+      },
+      {
+        "quantity": 2,
+        "price": 950.00,
+        "name": "Gucci bag"
+      },
+      {
+        "quantity": 1,
+        "price": 1100.00,
+        "name": "Fendi bag"
+      }
+    ]
+  }
+}
