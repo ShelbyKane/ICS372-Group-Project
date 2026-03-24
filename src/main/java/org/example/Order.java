@@ -95,7 +95,7 @@ public class Order {
             String warehouse = keyboard.nextLine();
 
             //if the keyboard ID is not either 1, 2, or 3, ask the user to enter a valid warehouse ID
-            while ( !warehouse.equals("1") || !warehouse.equals("2") || !warehouse.equals("3") ){
+            while ( !warehouse.equals("1") && !warehouse.equals("2") && !warehouse.equals("3") ){
                 System.out.print("Please enter a valid warehouse ID: ");
                 warehouse = keyboard.nextLine();
             }
