@@ -120,7 +120,7 @@ public class Main {
 
                     if (temp.equalsIgnoreCase("*")) break;  // back to main menu
 
-                    if (order_list.import_json_or_xml(temp) && order_list.is_empty()) backups.save_backup(order_list.get_last_order());
+                    order_list.import_json_or_xml(temp);
 
                 case "5":
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
