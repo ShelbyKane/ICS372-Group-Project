@@ -5,7 +5,8 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 
 public class FileLocator {
-    private String backup_dir = System.getProperty("user.dir");
+    private final String backup_dir = System.getProperty("user.dir");
+    private final String dir = backup_dir + "\\src\\backups";
     private String filename = "order";
     private String path = backup_dir + File.separator + filename;
 
