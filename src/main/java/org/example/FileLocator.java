@@ -16,7 +16,7 @@ public class FileLocator {
     public String get_path(int id) {
         String filename = String.format("\\order_%d.xml", id);
 
-        return backup_dir + File.separator + "\\src\\backups" + filename;
+        return backup_dir + filename;
     }
 
     public String get_path(String filename) {
