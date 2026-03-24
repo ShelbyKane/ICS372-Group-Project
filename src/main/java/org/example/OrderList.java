@@ -29,6 +29,10 @@ public class OrderList {
         return orders.get(index.get(order_id));
     }
 
+    public Order get_last_order() {
+        return orders.getLast();
+    }
+
     public void view(String orderNumber) {      // please use exists to check first, prevent error
         orders.get(index.get(orderNumber)).displayOrder();
     }
