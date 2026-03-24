@@ -25,6 +25,10 @@ public class OrderList {
         return index.get(order_id);
     }
 
+    public int get_size() {
+        return orders.size();
+    }
+
     public Order get_order(String order_id) {
         return orders.get(index.get(order_id));
     }
