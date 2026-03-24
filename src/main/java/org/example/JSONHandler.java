@@ -19,6 +19,7 @@ public class JSONHandler {
      * @return Order object created from JSON file
      * | null if the file isn't parsed properly
      */
+    //This method becomes redundant if using importOrder
     public static Order convertToOrder(String fileLocation){
 
         try (FileReader reader = new FileReader(fileLocation)){
@@ -35,7 +36,7 @@ public class JSONHandler {
 
             //Check Types and verify details are valid
             String type = ((typeObj instanceof String)) ? (String) typeObj : "Not Available";
-            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
+//            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
 
             Date date = ((dateObj instanceof Number)) ? new Date(((Number)dateObj).longValue()) : new Date();
 
@@ -56,6 +57,70 @@ public class JSONHandler {
         }
 
         return null;
+    }
+
+
+    public static Order objectToOrder(JSONObject orderObj){
+        Object typeObj = orderObj.get("type");
+        Object dateObj = orderObj.get("order_date");
+        Object itemsObj = orderObj.get("items");
+        Object stageObj = orderObj.get("stage");
+        Object orderNum = orderObj.get("orderNum")
+        //Add line for stageObj
+        //Add line for orderNum
+
+        //Check Types and verify details are valid
+        String type = ((typeObj instanceof String)) ? (String) typeObj : "Not Available";
+//            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
+
+        Date date = ((dateObj instanceof Number)) ? new Date(((Number)dateObj).longValue()) : new Date();
+
+        Order order = new Order(orderNum, type, stage, date, );        //Begin Order creation
+
+        //Get items, convert and place into order object before returning
+        JSONArray items = (itemsObj instanceof JSONArray) ? (JSONArray) itemsObj : new JSONArray();
+        for(Item i : convertItems(items)){
+            order.addItem(i);
+        }
+
+        return order;
+    }
+
+    public static Order importOrder(String fileLocation){
+        try (FileReader reader = new FileReader(fileLocation)){
+
+            JSONParser parser = new JSONParser();
+            JSONObject fullFileObj = (JSONObject) parser.parse(reader);
+            JSONObject orderObj = (JSONObject) fullFileObj.get("order");
+
+            return objectToOrder(orderObj);
+
+
+        } catch(IOException | ParseException | NullPointerException e){
+            System.out.println("Parse Exception: There was an error reading the JSON file. " +
+                    "please confirm order is in correct format and try again");
+
+        }
+    }
+    public static ArrayList<Order> importPreviousState(String fileLocation){
+        ArrayList<Order> orderList = new ArrayList<>();
+
+        try (FileReader reader = new FileReader(fileLocation)){
+            JSONParser parser = new JSONParser();
+            JSONArray fullFileObj = (JSONArray) parser.parse(reader);
+
+            for(JSONObject obj : fullFileObj){
+                orderList.add(objectToOrder(obj));
+            }
+
+
+        } catch(IOException | ParseException | NullPointerException e){
+            System.out.println("Parse Exception: There was an error reading the JSON file. " +
+                    "please confirm order is in correct format and try again");
+
+        }
+
+        return orderList;
     }
 
     /** This converts a JSONArray Object to an ArrayList of Item objects
@@ -103,6 +168,7 @@ public class JSONHandler {
             orderObj.put("type", o.getType());
             orderObj.put("order_date", o.getDate().getTime());
             orderObj.put("stage", o.getStage());
+
 
             JSONArray itemsArray = new JSONArray(); //array holding items for this order
 
