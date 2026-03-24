@@ -154,7 +154,7 @@ public class OrderList {
                 }
 
                 String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
-                XMLHandler.exportXMLOrder(orders.get(current_idx), path + ExtraMethods.create_filename(order_id));
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 1");
@@ -184,7 +184,7 @@ public class OrderList {
                 }
 
                 String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
-                XMLHandler.exportXMLOrder(orders.get(current_idx), path + ExtraMethods.create_filename(order_id));
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 3");
