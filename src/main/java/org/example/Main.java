@@ -63,7 +63,7 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equals("*")) break;                                    // back to main menu
-                    if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
+                    if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
                     order_id = temp;
                     order_list.view(order_id);
 
