@@ -13,6 +13,7 @@ public class Main {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         boolean sys_active = true;  // software will not terminate on its own
+        FileLocator backups = new FileLocator();
 
                 Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
                 String temp;                                // store input
