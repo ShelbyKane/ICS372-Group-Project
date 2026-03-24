@@ -10,10 +10,27 @@ public class Main {
 
         boolean sys_active = true;  // software will not terminate on its own
 
-        Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
-        String temp;                                // store input
+                Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
+                String temp;                                // store input
 
-        OrderList order_list = new OrderList();
+                OrderList order_list = new OrderList();
+                File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
+                File[] importFiles = importFolder.listFiles();              // get all files inside that folder
+
+                if (importFiles != null) {                                  // check folder existance and is not empty
+                    for (File file : importFiles) {                         // loop thru each file in folder
+                        System.out.println("Checking file: " + file.getName()); // TESTING!!!!! will not be in the final state
+                        if (file.getName().endsWith(".json")) {             // import JSON files
+                            System.out.println("Importing JSON file");     // TESTINGGG!!!!! will not be in the final state
+                            order_list.import_json_file(file.getPath());
+                        }
+                        else if (file.getName().endsWith(".xml")) {        // import XML filess
+                            System.out.println("Importing XML file");     // testing, will not be in the final state
+                            order_list.import_xml_file(file.getPath());
+                        }
+                    }
+                }
+
         String order_id;
 
         // software will continue to run until user terminate
