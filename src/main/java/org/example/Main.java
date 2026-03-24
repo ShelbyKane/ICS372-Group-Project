@@ -87,7 +87,7 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
-                    if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
+                    if (order_list.is_empty()) break;   // no order found
 
                     temp = keyboard.nextLine();
                     switch (temp) {
