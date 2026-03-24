@@ -35,6 +35,8 @@ public class Main {
 
         // software will continue to run until user terminate
         while (sys_active) {
+            AutoImporter.read_folder("downloadedOrders", order_list);
+            AutoImporter.read_folder("backupOrders", order_list);
 
             System.out.println("(Programming purpose only, will not be in the final state.)\n");
             System.out.println("Enter 1: view one order\n2: edit order stage\n3: view orders");
