@@ -4,6 +4,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 import java.util.Scanner;
 import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
@@ -14,29 +16,24 @@ public class Main {
                 String temp;                                // store input
 
                 OrderList order_list = new OrderList();
+                Timer timer = new Timer();  // create timer
+                timer.scheduleAtFixedRate(new TimerTask() {  // run repeatedly
+                    @Override
+            public void run() {
+                AutoImporter.read_folder("downloadedOrders", order_list);  // check downloadedOrders
+                //AutoImporter.read_folder("backupOrders", order_list);      // check backupOrders
+            }
+        }, 0, 3000);  // repeats every 3 seconds
+
                 File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
                 File[] importFiles = importFolder.listFiles();              // get all files inside that folder
 
-                if (importFiles != null) {                                  // check folder existance and is not empty
-                    for (File file : importFiles) {                         // loop thru each file in folder
-                        System.out.println("Checking file: " + file.getName()); // TESTING!!!!! will not be in the final state
-                        if (file.getName().endsWith(".json")) {             // import JSON files
-                            System.out.println("Importing JSON file");     // TESTINGGG!!!!! will not be in the final state
-                            order_list.import_json_file(file.getPath());
-                        }
-                        else if (file.getName().endsWith(".xml")) {        // import XML filess
-                            System.out.println("Importing XML file");     // testing, will not be in the final state
-                            order_list.import_xml_file(file.getPath());
-                        }
-                    }
-                }
+
 
         String order_id;
 
         // software will continue to run until user terminate
         while (sys_active) {
-            AutoImporter.read_folder("downloadedOrders", order_list);
-            AutoImporter.read_folder("backupOrders", order_list);
 
             System.out.println("(Programming purpose only, will not be in the final state.)\n");
             System.out.println("Enter 1: view one order\n2: edit order stage\n3: view orders");

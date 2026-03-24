@@ -1,12 +1,21 @@
 package org.example;
 import java.io.File;
 public class AutoImporter {
-public static void read_folder(String folderName, OrderList order_list) {
-    File importFolder = new File(folderName);      // identify folder
+    public static java.util.ArrayList<String> imported_files = new java.util.ArrayList<>();  // store names of imported files to avoid duplicates
+
+    public static void read_folder(String folderName, OrderList order_list) {
+    File importFolder = new File(folderName);
+        if (!importFolder.exists() || importFolder.listFiles() ==null){
+            return;
+        }
     File[] importFiles = importFolder.listFiles(); // get all da files
 
-    if (importFiles != null) {            // check folder existance and is not empty
+    if (importFiles != null) { // check folder existance and is not empty
         for (File file : importFiles) {  // loop thru each file in folder
+            if (imported_files.contains(file.getPath())) {  // check folder existance and is not empty
+                continue;
+            }
+            imported_files.add(file.getPath());  // add file to imported list
             System.out.println("Checking file: " + file.getName());
 
             if (file.getName().endsWith(".json")) {  // import JSON files
