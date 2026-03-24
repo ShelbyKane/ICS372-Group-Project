@@ -22,6 +22,10 @@ public class FileLocator {
         return backup_dir + File.separator + "\\src\\backups" + filename;
     }
 
+    public String get_dir() {
+        return dir;
+    }
+
     public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
         get_path(order.getOrderNumber());
         XMLHandler.exportXMLOrder(order, path);
