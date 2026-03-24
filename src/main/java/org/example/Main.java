@@ -154,7 +154,10 @@ public class Main {
 
         }
 
+        timer.cancel();
+        timer.purge();
         keyboard.close();
+        System.out.println("Thank you for using the software. See you again soon!");
     }
 
 }
