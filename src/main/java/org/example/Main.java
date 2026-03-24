@@ -1,6 +1,8 @@
 package org.example;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
 import java.util.Scanner;
 import java.io.*;
