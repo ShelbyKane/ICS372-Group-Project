@@ -25,7 +25,7 @@ public class FileLocator {
      * @return          A file location of this order.
      */
     public String get_path(String filename) {
-        return backup_dir + File.separator + "\\src\\backups" + filename;
+        return backup_dir + File.separator + filename;
     }
 
     public String get_dir() {
