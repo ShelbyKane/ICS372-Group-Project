@@ -88,7 +88,7 @@ public class Main {
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
                     System.out.println("Display orders.");
-                    System.out.print("1: completed orders\n2: uncompleted orders\n3: all orders");
+                    System.out.println("1: completed orders\n2: uncompleted orders\n3: all orders");
                     System.out.println("4: completed orders (all data)\n5: uncompleted orders (all data)\n6: all orders (all data)");
                     System.out.println("*: main menu\nelse: error and still back to main menu");
                     temp = keyboard.nextLine();
