@@ -28,6 +28,10 @@ public class FileLocator {
         return backup_dir + File.separator + filename;
     }
 
+    /**
+     * Retrieve the backups folder (directory) path.
+     * @return  Directory path.
+     */
     public String get_dir() {
         return dir;
     }
