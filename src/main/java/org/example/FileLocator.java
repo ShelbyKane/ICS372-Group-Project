@@ -1,5 +1,7 @@
 package org.example;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 
 public class FileLocator {
@@ -7,9 +9,21 @@ public class FileLocator {
     private String filename = "order";
     private String path = backup_dir + File.separator + filename;
 
-    public String store_backup(int id) {
+    /**
+     * Create the filename and its file location. Can be used to get path
+     * or simply creating the path for a specific order.
+     * @param id Order number (order id)
+     * @return  A file location of this order.
+     */
+    public String get_path(int id) {
         filename = String.format("\\order_%d.xml", id);
+        path = backup_dir + File.separator + "\\src\\backups" + filename;
 
         return backup_dir + File.separator + "\\src\\backups" + filename;
+    }
+
+    public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
+        get_path(order.getOrderNumber());
+        XMLHandler.exportXMLOrder(order, path);
     }
 }

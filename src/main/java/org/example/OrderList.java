@@ -115,6 +115,21 @@ public class OrderList {
         System.out.println("Total orders: " + count);
     }
 
+    public boolean import_json_or_xml(String path) throws ParserConfigurationException, SAXException {
+        File file = new File(path);
+
+        if (file.getAbsolutePath().endsWith(".json")) {
+            import_json_file(path);
+        } else if (file.getAbsolutePath().endsWith(".xml")) {
+            import_xml_file(path);
+        } else {
+            System.out.println("Not a valid file");
+            return false;
+        }
+
+        return true;
+    }
+
     public void import_xml_file(String fileName) {
         File file_location = new File(fileName);
 
