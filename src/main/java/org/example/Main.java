@@ -76,6 +76,10 @@ public class Main {
                         case "4" -> order_list.get_order(order_id).reinstateOrder();
                         default -> System.out.println("Error");
                     }
+
+                    if (temp.equals("1")  || temp.equals("2") || temp.equals("3") || temp.equals("4")) {
+                        backups.save_backup(order_list.get_order(order_id));
+                    }
                     break;
 
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
