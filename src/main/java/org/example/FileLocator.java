@@ -39,8 +39,6 @@ public class FileLocator {
     /**
      * Create a new XML file for an Order object, uses to save order's update.
      * @param order An Order object.
-     * @throws ParserConfigurationException
-     * @throws TransformerException
      */
     public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
         XMLHandler.exportXMLOrder(order, get_path(order.getOrderNumber()));
