@@ -19,6 +19,11 @@ public class FileLocator {
         return backup_dir + filename;
     }
 
+    /**
+     * Create its file location using given filename (in specific format).
+     * @param filename  Filename, eg order_1.xml
+     * @return          A file location of this order.
+     */
     public String get_path(String filename) {
         return backup_dir + File.separator + "\\src\\backups" + filename;
     }
