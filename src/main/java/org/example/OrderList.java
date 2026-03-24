@@ -2,6 +2,7 @@ package org.example;
 
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,8 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OrderList {
+    private String path = "";
     private ArrayList<Order> orders = new ArrayList<>();    // list of orders
     private static HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
+
+    public OrderList(String path) {
+        this.path = path;
+    }
 
     public static boolean exists(String order_id) {
         return index.containsKey(order_id);
@@ -147,14 +153,15 @@ public class OrderList {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
 
-                //System.out.println("Import is successful!");
+                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 1");
             }
 
 
-        } catch (ParserConfigurationException | IOException |  SAXException ex) {
+        } catch (ParserConfigurationException | IOException | SAXException | TransformerException ex) {
             System.out.println("OrderList error 2");
         }
     }
@@ -176,14 +183,15 @@ public class OrderList {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
 
-                //System.out.println("Import is successful!");
+                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 3");
             }
 
 
-        } catch (IOException ex) {
+        } catch (IOException | TransformerException | ParserConfigurationException ex) {
             System.out.println("OrderList error 4");
         }
     }
