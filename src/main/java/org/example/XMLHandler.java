@@ -102,9 +102,6 @@ public class XMLHandler {
 
                 // Get Order Data
                 // ----------------------
-                //!!!!orderType = element.getElementsByTagName("OrderType").item(0).getTextContent();                   // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
-
-                // Optional Nodes
                 // Get length of value/NodeList
                 int orderNumSize = element.getAttribute("id").length();
                 NodeList orderStageList = element.getElementsByTagName("OrderStage");
@@ -114,9 +111,7 @@ public class XMLHandler {
                 // If length of value/NodeList > 0, then Get Found Value. Else, Set Default Value
                 orderNumber = ((orderNumSize > 0)) ? Integer.parseInt(element.getAttribute("id")) : -1;           // NOTE: orderNumber is a value within an attribute tag. Get value from there.
                 orderStage = ((orderStageList.getLength() > 0)) ?  orderStageList.item(0).getTextContent() : "Incoming";
-                orderType = ((orderTypeList.getLength() > 0)) ? orderTypeList.item(0).getTextContent() : "Pick-Up";    // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
-                // !!! Check: Should there be a default for orderType?
-
+                orderType = ((orderTypeList.getLength() > 0)) ? orderTypeList.item(0).getTextContent() : null;    // NOTE: orderType is a node nested in an attribute. Get node by tag name > Get first node (only 1) > Get String Value
 
                 if (orderDateList.getLength() > 0) {
                     String newDate = orderDateList.item(0).getTextContent();
@@ -125,8 +120,22 @@ public class XMLHandler {
                     orderDate = LocalDate.now();
                 }
 
+                // Error Handling
+                // -------------------
+                // If given orderNumber already exists in OrderList, it might be a duplicate or create other data integrity errors. Report error and return a null object.
+                if (OrderList.exists(String.valueOf(orderNumber))){
+                    System.out.println("Alert: The given Order Number: " + orderNumber + ", already exists. Double check that there are no duplicate files, or update the Order Number in the import file.");
+                    return null;
+                }
+
+                // If orderType is not given, report error and return a null object
+                if (orderType == null) {
+                    System.out.println("Alert: No orderType given by XML import file. Please add orderType to import file for Order: " + orderNumber);
+                    return null;
+                }
+
+
                 // Create New Order Object
-                // !!!! use date instead of LocalDate?
                 Date orderDate2 = Date.from(orderDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 Order order = new Order(orderNumber, orderType, orderStage, orderDate2);
 

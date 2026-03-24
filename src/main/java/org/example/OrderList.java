@@ -11,9 +11,9 @@ import java.util.HashMap;
 
 public class OrderList {
     private ArrayList<Order> orders = new ArrayList<>();    // list of orders
-    private HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
+    private static HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
 
-    public boolean exists(String order_id) {
+    public static boolean exists(String order_id) {
         return index.containsKey(order_id);
     }
 

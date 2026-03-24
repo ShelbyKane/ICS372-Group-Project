@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Orders>
+    <Order>
+        <OrderStage>In-Progress</OrderStage>
+        <OrderType>Delivery</OrderType>
+        <OrderDate>03/23/2026</OrderDate>
+        <Item type="TV">
+            <Price>1000</Price>
+            <Quantity>2</Quantity>
+        </Item>
+        <Item type="Switch Controller">
+            <Price>79.99</Price>
+            <Quantity>1</Quantity>
+        </Item>
+    </Order>
+</Orders>
