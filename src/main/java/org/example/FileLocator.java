@@ -33,7 +33,7 @@ public class FileLocator {
      * @return  Directory path.
      */
     public String get_dir() {
-        return dir;
+        return backup_dir;
     }
 
     public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
