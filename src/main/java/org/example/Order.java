@@ -51,7 +51,7 @@ public class Order {
         // If the new Order does NOT have a given orderNumber, then check that the current orderIndex value isn't already in OrderList.
         } else {
             while (OrderList.exists(String.valueOf(orderIndex))) {
-                System.out.println("! order ID " + orderIndex + " already exists.");
+                //System.out.println("! order ID " + orderIndex + " already exists.");
                 orderIndex++;
             }
             this.orderNumber = orderIndex;
