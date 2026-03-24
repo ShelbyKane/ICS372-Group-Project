@@ -43,7 +43,6 @@ public class FileLocator {
      * @throws TransformerException
      */
     public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
-        get_path(order.getOrderNumber());
-        XMLHandler.exportXMLOrder(order, path);
+        XMLHandler.exportXMLOrder(order, get_path(order.getOrderNumber()));
     }
 }
