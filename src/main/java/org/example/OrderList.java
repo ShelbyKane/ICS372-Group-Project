@@ -2,18 +2,23 @@ package org.example;
 
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OrderList {
+    private String path = "";
     private ArrayList<Order> orders = new ArrayList<>();    // list of orders
-    private HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
+    private static HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
 
-    public boolean exists(String order_id) {
+    public OrderList(String path) {
+        this.path = path;
+    }
+
+    public static boolean exists(String order_id) {
         return index.containsKey(order_id);
     }
 
@@ -115,6 +120,21 @@ public class OrderList {
         System.out.println("Total orders: " + count);
     }
 
+    public boolean import_json_or_xml(String path) throws ParserConfigurationException, SAXException {
+        File file = new File(path);
+
+        if (file.getAbsolutePath().endsWith(".json")) {
+            import_json_file(path);
+        } else if (file.getAbsolutePath().endsWith(".xml")) {
+            import_xml_file(path);
+        } else {
+            System.out.println("Not a valid file");
+            return false;
+        }
+
+        return true;
+    }
+
     public void import_xml_file(String fileName) {
         File file_location = new File(fileName);
 
@@ -132,14 +152,15 @@ public class OrderList {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
 
-                //System.out.println("Import is successful!");
+                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 1");
             }
 
 
-        } catch (ParserConfigurationException | IOException |  SAXException ex) {
+        } catch (ParserConfigurationException | IOException | SAXException | TransformerException ex) {
             System.out.println("OrderList error 2");
         }
     }
@@ -161,14 +182,15 @@ public class OrderList {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
 
-                //System.out.println("Import is successful!");
+                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
+                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
 
             } else {
                 System.out.println("OrderList error 3");
             }
 
 
-        } catch (IOException ex) {
+        } catch (IOException | TransformerException | ParserConfigurationException ex) {
             System.out.println("OrderList error 4");
         }
     }

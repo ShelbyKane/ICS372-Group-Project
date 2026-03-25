@@ -1,15 +1,46 @@
 package org.example;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import java.io.File;
 
 public class FileLocator {
-    private String backup_dir = System.getProperty("user.dir");
-    private String filename = "order";
-    private String path = backup_dir + File.separator + filename;
+    private final String backup_dir = System.getProperty("user.dir") + "\\src\\backups";
 
-    public String store_backup(int id) {
-        filename = String.format("\\order_%d.xml", id);
+    /**
+     * Create the filename and its file location. Can be used to get path
+     * or simply creating the path for a specific order.
+     * @param id    Order number (order id)
+     * @return      A file location of this order.
+     */
+    public String get_path(int id) {
+        String filename = String.format("\\order_%d.xml", id);
 
-        return backup_dir + File.separator + "\\src\\backups" + filename;
+        return backup_dir + filename;
+    }
+
+    /**
+     * Create its file location using given filename (in specific format).
+     * @param filename  Filename, eg order_1.xml
+     * @return          A file location of this order.
+     */
+    public String get_path(String filename) {
+        return backup_dir + File.separator + filename;
+    }
+
+    /**
+     * Retrieve the backups folder (directory) path.
+     * @return  Directory path.
+     */
+    public String get_dir() {
+        return backup_dir;
+    }
+
+    /**
+     * Create a new XML file for an Order object, uses to save order's update.
+     * @param order An Order object.
+     */
+    public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
+        XMLHandler.exportXMLOrder(order, get_path(order.getOrderNumber()));
     }
 }

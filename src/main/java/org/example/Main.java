@@ -1,42 +1,44 @@
 package org.example;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXException;
 import java.util.Scanner;
 import java.io.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
+    public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
 
         boolean sys_active = true;  // software will not terminate on its own
+        FileLocator backups = new FileLocator();
 
                 Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
                 String temp;                                // store input
 
-                OrderList order_list = new OrderList();
+                OrderList order_list = new OrderList(backups.get_dir());
+        ReloadFiles.start_reload(order_list, backups.get_dir());
+
+                Timer timer = new Timer();  // create timer
+                timer.scheduleAtFixedRate(new TimerTask() {  // run repeatedly
+                    @Override
+            public void run() {
+                AutoImporter.read_folder("downloadedOrders", order_list);  // check downloadedOrders
+                //AutoImporter.read_folder("backupOrders", order_list);      // check backupOrders
+            }
+        }, 0, 3000);  // repeats every 3 seconds
+
                 File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
                 File[] importFiles = importFolder.listFiles();              // get all files inside that folder
 
-                if (importFiles != null) {                                  // check folder existance and is not empty
-                    for (File file : importFiles) {                         // loop thru each file in folder
-                        System.out.println("Checking file: " + file.getName()); // TESTING!!!!! will not be in the final state
-                        if (file.getName().endsWith(".json")) {             // import JSON files
-                            System.out.println("Importing JSON file");     // TESTINGGG!!!!! will not be in the final state
-                            order_list.import_json_file(file.getPath());
-                        }
-                        else if (file.getName().endsWith(".xml")) {        // import XML filess
-                            System.out.println("Importing XML file");     // testing, will not be in the final state
-                            order_list.import_xml_file(file.getPath());
-                        }
-                    }
-                }
+
 
         String order_id;
 
         // software will continue to run until user terminate
         while (sys_active) {
-            AutoImporter.read_folder("downloadedOrders", order_list);
-            AutoImporter.read_folder("backupOrders", order_list);
 
             System.out.println("(Programming purpose only, will not be in the final state.)\n");
             System.out.println("Enter 1: view one order\n2: edit order stage\n3: view orders");
@@ -52,7 +54,7 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
-                    if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
+                    if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
 
                     order_list.view(temp);
 
@@ -66,7 +68,7 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equals("*")) break;                                    // back to main menu
-                    if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
+                    if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
                     order_id = temp;
                     order_list.view(order_id);
 
@@ -79,20 +81,23 @@ public class Main {
                         case "4" -> order_list.get_order(order_id).reinstateOrder();
                         default -> System.out.println("Error");
                     }
+
+                    if (temp.equals("1")  || temp.equals("2") || temp.equals("3") || temp.equals("4")) {
+                        backups.save_backup(order_list.get_order(order_id));
+                    }
                     break;
 
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
                     System.out.println("Display orders.");
-                    System.out.print("1: completed orders\n2: uncompleted orders\n3: all orders");
+                    System.out.println("1: completed orders\n2: uncompleted orders\n3: all orders");
                     System.out.println("4: completed orders (all data)\n5: uncompleted orders (all data)\n6: all orders (all data)");
                     System.out.println("*: main menu\nelse: error and still back to main menu");
                     temp = keyboard.nextLine();
 
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
-                    if (order_list.is_empty() || !order_list.exists(temp)) break;   // no order found
+                    if (order_list.is_empty()) break;   // no order found
 
-                    temp = keyboard.nextLine();
                     switch (temp) {
                         case "1" -> order_list.view_completed_orders();
                         case "2" -> order_list.view_uncompleted_orders();
@@ -115,8 +120,7 @@ public class Main {
 
                     if (temp.equalsIgnoreCase("*")) break;  // back to main menu
 
-                    order_list.import_json_file(temp);
-                    break;
+                    order_list.import_json_or_xml(temp);
 
                 case "5":
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
@@ -150,7 +154,10 @@ public class Main {
 
         }
 
+        timer.cancel();
+        timer.purge();
         keyboard.close();
+        System.out.println("Thank you for using the software. See you again soon!");
     }
 
 }
