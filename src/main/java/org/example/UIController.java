@@ -36,9 +36,30 @@ public class UIController{
 
     private int inputOrderNumber;
 
-    public UIController(ArrayList<Order> orders){
+
+    public UIController(){ // creates controller instance
+
+    }
+    /*
+        no longer need arg constructor since the FXMLLoader will always call the no-arg constructor
+
+        kept it in just in case we need it
+
+     */
+    /*public UIController(ArrayList<Order> orders){
         this.orders = orders;
         orderNumbers = new ArrayList();
+
+        for(Order o : orders){
+            orderNumbers.add(o.getOrderNumber());
+        }
+    }
+     */
+
+    public void setOrders(ArrayList<Order> orders){
+
+        this.orders = orders;
+        orderNumbers = new ArrayList<>();
 
         for(Order o : orders){
             orderNumbers.add(o.getOrderNumber());

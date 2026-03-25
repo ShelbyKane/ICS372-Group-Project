@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.UIController"
+            prefHeight="400.0" prefWidth="600.0">
+    <!-- Header -->
+    <Label fx:id="headerLabel" layoutX="20" layoutY="20"
+           text="Order Management System"
+           style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <!-- Order Number Text Field -->
+    <TextField fx:id="orderNumberField" layoutX="20" layoutY="60"
+               promptText="Enter Order Number" prefWidth="200"/>
+
+    <!-- Buttons -->
+    <Button fx:id="displayOrderButton" layoutX="250" layoutY="60"
+            text="Display Order" onAction="#displayOrderButton"/>
+    <Button fx:id="beginOrderButton" layoutX="20" layoutY="100"
+            text="Begin Processing" onAction="#beginProcessingOrderButton"/>
+    <Button fx:id="completeOrderButton" layoutX="180" layoutY="100"
+            text="Complete Order" onAction="#completeOrderButton"/>
+    <Button fx:id="cancelOrderButton" layoutX="350" layoutY="100"
+            text="Cancel Order" onAction="#cancelOrderButton"/>
+    <Button fx:id="reinstateOrderButton" layoutX="500" layoutY="100"
+            text="Reinstate Order" onAction="#reinstateOrderButton"/>
+    <Button fx:id="exitButton" layoutX="20" layoutY="140"
+            text="Exit" onAction="#exitButton"/>
+
+</AnchorPane>

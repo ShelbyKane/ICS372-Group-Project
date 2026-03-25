@@ -1,6 +1,7 @@
 plugins {
     java
     application
+    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 group = "org.example"
@@ -20,7 +21,19 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 }
-
+javafx{
+    version = "21"
+    modules = listOf("javafx.controls", "javafx.fxml")
+}
+application{
+    mainClass.set("org.example.UILauncher")
+}
+tasks.withType<JavaExec> {
+    jvmArgs = listOf(
+        "--module-path", "C:/Users/nosid/javafx-sdk-21/lib",
+        "--add-modules", "javafx.controls,javafx.fxml"
+    )
+}
 tasks.test {
     useJUnitPlatform()
 }
