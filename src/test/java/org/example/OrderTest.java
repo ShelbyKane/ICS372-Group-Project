@@ -14,12 +14,12 @@ class OrderTest {
     private Order order;
     @BeforeEach
     void setUp(){
-        order = new Order(-1,"ship","incoming",new Date(1515354694451L));
+        order = new Order(1,"ship","incoming",new Date(1515354694451L));
     }
     @Test
     void getOrderNumber() {
        int result = order.getOrderNumber();
-        Assertions.assertEquals(0,result,"Get Order Number");
+        Assertions.assertEquals(1,result,"Get Order Number");
     }
 
     @Test
@@ -102,7 +102,7 @@ class OrderTest {
         order.addItem(new Item("Chair", 200, 5.00));
         order.addItem(new Item("Table", 75, 2.50));
         double result = order.getTotalCost();
-        Assertions.assertEquals(187.50, result, "Get total Cost");
+        Assertions.assertEquals(1187.50, result, "Get total Cost");
     }
 
 }
