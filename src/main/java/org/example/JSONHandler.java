@@ -12,6 +12,9 @@ import java.util.Date;
 
 public class JSONHandler {
 
+    private JSONHandler() { }
+
+
     /** This method converts a JSON file to an Order object based off of a given directory for the file.
      *  The method will add the type and date of an order and then all the Item objects.
      *
