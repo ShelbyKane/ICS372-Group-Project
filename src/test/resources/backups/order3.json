@@ -1,0 +1,23 @@
+{
+  "order": {
+    "type": "pickup",
+    "order_date": 1615354694451,
+    "items": [
+      {
+        "name": "Table",
+        "quantity": 1,
+        "price": 120.50
+      },
+      {
+        "name": "Chair",
+        "quantity": 4,
+        "price": 45.00
+      },
+      {
+        "name": "Cushion",
+        "quantity": 2,
+        "price": 15.75
+      }
+    ]
+  }
+}
