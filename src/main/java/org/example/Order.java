@@ -107,86 +107,27 @@ public class Order {
      * Sets the stage to in progress
      */
     public void startFulfilling() {
-        if (stage.equalsIgnoreCase("incoming")){
-
-
-            Scanner keyboard = new Scanner(System.in);
-            System.out.print("Enter warehouse nubmer: ");
-            String warehouse = keyboard.nextLine();
-
-            //if the keyboard ID is not either 1, 2, or 3, ask the user to enter a valid warehouse ID
-            while ( !warehouse.equals("1") || !warehouse.equals("2") || !warehouse.equals("3") ){
-                System.out.print("Please enter a valid warehouse ID: ");
-                warehouse = keyboard.nextLine();
-            }
-
-            warehouseID = Integer.parseInt(warehouse);
-
-            stage = "in progress";
-
-            System.out.println("Order status changed from incoming to in progress.");
-        }
-
-        else {
-            System.out.println("You cannot start fulfilling an order that is in stage " + stage + ".");
-        }
+       stage = "in progress";
 
     }
 
     /**
      * This method is for when an employee completes an order
-     * If the order is not currently in progress, it will not change the status, and will inform user
      * Sets the stage to completed
      */
     public void completeOrder() {
-
-        if (stage.equals("in progress")){
-            stage = "completed";
-            System.out.println("Order status changed from in progress to completed. ");
-        }
-
-        else {
-            System.out.println("You cannot complete an order that is not currently in progress. ");
-        }
+        stage = "completed";
     }
 
     /**
      * This sets the stage to canceled
      */
     public void cancelOrder(){
-
-        if (stage.equals("completed")){
-            System.out.println("You cannot cancel an order that has already been completed. ");
-        }
-        else {
-            stage = "canceled";
-            System.out.println("The order has been canceled. ");
-        }
-
+        stage = "canceled";
     }
 
     public void reinstateOrder() {
-        if (stage.equals("canceled")){
-            Scanner keyboard = new Scanner(System.in);
-            System.out.print("Enter warehouse nubmer: ");
-            String warehouse = keyboard.nextLine();
-
-            //if the warehouse ID is not either 1, 2, or 3, ask the user to enter a valid warehouse ID
-            while ( !warehouse.equals("1") || !warehouse.equals("2") || !warehouse.equals("3") ){
-                System.out.print("Please enter a valid warehouse ID: ");
-                warehouse = keyboard.nextLine();
-            }
-
-            warehouseID = Integer.parseInt(warehouse);
-
             stage = "in progress";
-
-            System.out.println("Order status changed from canceled to in progress.");
-        }
-
-        else{
-            System.out.println("You cannot reinstate an order that is not currently canceled. ");
-        }
     }
 
     /**
