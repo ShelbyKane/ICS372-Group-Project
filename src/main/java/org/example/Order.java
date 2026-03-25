@@ -51,7 +51,7 @@ public class Order {
         // If the new Order does NOT have a given orderNumber, then check that the current orderIndex value isn't already in OrderList.
         } else {
             while (OrderList.exists(String.valueOf(orderIndex))) {
-                //System.out.println("! order ID " + orderIndex + " already exists.");
+                System.out.println("! order ID " + orderIndex + " already exists.");
                 orderIndex++;
             }
             this.orderNumber = orderIndex;
@@ -181,5 +181,20 @@ public class Order {
         return String.valueOf(sb);
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Order)) return false;
 
+        Order otherOrder = (Order) o;
+        return otherOrder.getOrderNumber() == this.orderNumber
+                && otherOrder.getType().equals(this.type)
+                && otherOrder.getDate().equals(this.date)
+                && otherOrder.getStage().equals(this.stage)
+                && otherOrder.getTotalCost() == this.getTotalCost();
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(orderNumber,type,date,stage,this.getTotalCost());
+    }
 }
