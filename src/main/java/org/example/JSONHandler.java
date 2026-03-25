@@ -59,7 +59,11 @@ public class JSONHandler {
         return null;
     }
 
-
+    /**
+     * Converts a JSONObject into an Order Object
+     * @param obj JSONObject to be converted
+     * @return Order derived from JSONObject
+     */
     private static Order objectToOrder(Object obj){
 
         JSONObject orderObj = (JSONObject) obj;
@@ -88,6 +92,11 @@ public class JSONHandler {
         return order;
     }
 
+    /**
+     * Import a singular JSON order
+     * @param fileLocation
+     * @return
+     */
     public static Order importOrder(String fileLocation){
         try (FileReader reader = new FileReader(fileLocation)){
 
@@ -105,6 +114,8 @@ public class JSONHandler {
         }
         return null;
     }
+
+
     public static ArrayList<Order> importPreviousState(String fileLocation){
         ArrayList<Order> orderList = new ArrayList<>();
 
