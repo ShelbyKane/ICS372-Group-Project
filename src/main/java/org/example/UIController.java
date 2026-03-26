@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -19,6 +20,8 @@ public class UIController{
 
    @FXML
    private Label headerLabel;
+   @FXML
+   private TextArea orderDisplayTextArea;
    @FXML
     private TextField orderNumberField;
    @FXML
@@ -209,7 +212,7 @@ public class UIController{
         if (getOrderNumberFromUI()) {
             for(Order o : orders) {
                 if (o.getOrderNumber() == inputOrderNumber) {
-                    headerLabel.setText(o.toString());
+                    orderDisplayTextArea.setText(o.toString());
                 }
             }
         }
