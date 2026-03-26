@@ -3,12 +3,11 @@ package org.example;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -17,15 +16,29 @@ public class UIController{
 
     private ArrayList<Order> orders;
     private ArrayList<Integer> orderNumbers;
+    private Order currOrder;
+    private int currWarehouse;
+    private int inputOrderNumber;
+
 
    @FXML
    private Label headerLabel;
    @FXML
-   private TextArea orderDisplayTextArea;
+   private Label notifLabel;
+   @FXML
+   private TextArea itemTextArea;
    @FXML
     private TextField orderNumberField;
    @FXML
+   private ListView<Order> orderListView;
+   @FXML
+   private ListView<String> itemListView;
+   @FXML
     private Button displayOrderButton;
+   @FXML
+   private ComboBox<String> warehouseComboBox;
+
+   //BUTTONS
    @FXML
     private Button beginOrderButton;
    @FXML
@@ -37,7 +50,6 @@ public class UIController{
    @FXML
     private Button exitButton;
 
-    private int inputOrderNumber;
 
 
     public UIController(){ // creates controller instance
@@ -58,44 +70,73 @@ public class UIController{
         }
     }
      */
+    public void initialize(){
+        warehouseComboBox.getItems().setAll("Warehouse 1", "Warehouse 2", "Warehouse 3");
+        currWarehouse = -1;
+        setListeners();
 
-    public void setOrders(ArrayList<Order> orders){
+        orders = JSONHandler.importPreviousState("src/data/previous_state.json");
+        updateOrders();
 
-        this.orders = orders;
-        orderNumbers = new ArrayList<>();
+    }
 
-        for(Order o : orders){
-            orderNumbers.add(o.getOrderNumber());
+    private void updateOrders(){
+        orderListView.getItems().setAll(FXCollections.observableArrayList(orders));
+    }
+    private void updateItems(){
+        if(currOrder != null){
+
+            ArrayList<String> stringList = new ArrayList<>();
+            int count = 0;
+            for(Item i : currOrder.getItems()){
+                StringBuilder sb = new StringBuilder("\n");
+                sb.append("[Item " + (++count));
+                sb.append("]\nName: " + i.getName());
+                sb.append(", Quantity: " + i.getQuantity());
+                sb.append(String.format(", Price: %.2f", i.getPrice()));
+                stringList.add(String.valueOf(sb));
+//                sb.append(i.stringForOrder());
+            }
+//            itemTextArea.setText(String.valueOf(sb));
+            itemListView.getItems().setAll(FXCollections.observableArrayList(stringList));
+
+
+//            itemTextArea.setText(currOrder.getItems().toString());
         }
     }
 
-    /**
-     * This method gets the order number from the text box in the UI
-     * @return true if the order number was successful, false if the order number was not successful
-     */
-    public boolean getOrderNumberFromUI() {
-        //Try block makes sure that the user did enter an integer. If not, it says invalid order number
-        try {
-            inputOrderNumber = Integer.parseInt(orderNumberField.getText());
-            if(orderNumbers.contains(inputOrderNumber)){
-                return true;
-            }
-            else {
-                headerLabel.setText("Invalid Order Number");
-                return false;
-            }
 
-        }
-        catch (NumberFormatException exception) {
-            headerLabel.setText("Invalid Order Number");
-        }
-        catch (Exception ex) {
-            headerLabel.setText("There was some error");
-        }
-        return false;
+
+    private void setListeners(){
+        orderListView.getSelectionModel()
+             .selectedItemProperty()
+             .addListener((obs, oldOrder, selectedOrder) -> {
+                 if (selectedOrder != null) {
+                     currOrder = selectedOrder;
+                     updateItems();
+                 }
+             });
+
+        warehouseComboBox.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    switch (newValue) {
+                        case "Warehouse Selection" -> notifLabel.setText("Please select a warehouse");
+                        case "Warehouse 1" -> currWarehouse = 1;
+                        case "Warehouse 2" -> currWarehouse = 2;
+                        case "Warehouse 3" -> currWarehouse = 3;
+                    }
+                    notifLabel.setText("");
+                }
+        );
+    }
+
+    public void refreshUI(){
+        updateOrders();
+//        updateItems();
     }
 
 
+    //BUTTONS
     /**
      * This takes an action event, when the Begin Processing button is hit, and pulls the order number from the textbox
      * and begins processing the order
@@ -104,27 +145,21 @@ public class UIController{
      * @param e
      */
     public void beginProcessingOrderButton(ActionEvent e) {
-
-        if (getOrderNumberFromUI()) {
-            if(orderNumbers.contains(inputOrderNumber)){
-                //grab the order from the arraylist that matches, and change the status to in progress
-                for (Order o : orders) {
-                    if (o.getOrderNumber() == inputOrderNumber) {
-                        if (o.getStage().equals("incoming")){
-                            o.startFulfilling();
-                            headerLabel.setText(o.getOrderNumber() + " stage changed to in progress.");
-                            return;
-                        }
-                        else {
-                            headerLabel.setText("You cannot start processing an order that has already been started.");
-                        }
-                    }
-                }
-            }
-            else {
-                headerLabel.setText("That order number, while definitely an integer, does not exist.");
-            }
+        if (currOrder == null) return;
+        if(!currOrder.getStage().equals("incoming")){
+            notifLabel.setText("Order Must be incoming");
+            return;
         }
+        if (currWarehouse < 1){
+            notifLabel.setText("Please select warehouse");
+            return;
+        }
+
+        currOrder.startFulfilling();
+        currOrder.setWarehouse(currWarehouse);
+
+
+        refreshUI();
 
     }
 
@@ -136,24 +171,9 @@ public class UIController{
      * @param e
      */
     public void cancelOrderButton(ActionEvent e) {
-        if (getOrderNumberFromUI()) {
-            //loop through orders to make sure we're editing the right one
-            for(Order o : orders) {
-                //if the order number is the input order number
-                if (o.getOrderNumber() == inputOrderNumber) {
-                    if (o.getStage().equals("cancelled")){
-                        headerLabel.setText(o.getOrderNumber() + " has already been cancelled.");
-                    }
-                    else if (o.getStage().equals("completed")){
-                        headerLabel.setText(o.getOrderNumber() + " you can't cancel an order that has already been completed.");
-                    }
-                    else {
-                        o.cancelOrder();
-                        headerLabel.setText(o.getOrderNumber() + " has been cancelled.");
-                    }
-                }
-            }
-        }
+        if(currOrder == null) return;
+        if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) currOrder.cancelOrder();
+        refreshUI();
 
     }
 
@@ -163,24 +183,9 @@ public class UIController{
      * @param e
      */
     public void completeOrderButton(ActionEvent e){
-        if (getOrderNumberFromUI()) {
-            for(Order o : orders) {
-                if (o.getOrderNumber() == inputOrderNumber) {
-                    if (o.getStage().equals("completed")){
-                        headerLabel.setText(o.getOrderNumber() + " has already been completed.");
-                    }
-                    else if (o.getStage().equals("canceled")){
-                        headerLabel.setText(o.getOrderNumber() + " has been cancelled. You cannot complete a canceled order.");
-                    }
-                    else if (o.getStage().equals("incoming")){
-                        headerLabel.setText(o.getOrderNumber() + " is currently incoming. You must begin processing an order before it can be completed.");
-                    }
-                    else {
-                        o.completeOrder();
-                    }
-                }
-            }
-        }
+        if(currOrder == null) return;
+        if(currOrder.getStage().equals("in progress")) currOrder.completeOrder();
+        refreshUI();
     }
 
 
@@ -189,36 +194,20 @@ public class UIController{
      * @param e
      */
     public void reinstateOrderButton(ActionEvent e){
-        if (getOrderNumberFromUI()) {
-            for(Order o : orders) {
-                if (o.getOrderNumber() == inputOrderNumber) {
-                    if (o.getStage().equals("canceled")){
-                        o.reinstateOrder();
-                        headerLabel.setText(o.getOrderNumber() + " has been reinstated.");
-                    }
-                    else {
-                        headerLabel.setText("You cannot reinstate an order that isn't currently canceled.");
-                    }
-                }
-            }
-        }
+        if (currOrder == null) return;
+        if(currOrder.getStage().equals("canceled")) currOrder.reinstateOrder();
+        refreshUI();
     }
 
-    /**
-     * Displays the order in the UI
-     * @param e
-     */
-    public void displayOrderButton(ActionEvent e){
-        if (getOrderNumberFromUI()) {
-            for(Order o : orders) {
-                if (o.getOrderNumber() == inputOrderNumber) {
-                    orderDisplayTextArea.setText(o.toString());
-                }
-            }
-        }
-    }
+
 
     public void exitButton(ActionEvent e){
         Platform.exit();
     }
+
+
+    public void changeWarehouseComboBox(ActionEvent e){
+
+    }
 }
+

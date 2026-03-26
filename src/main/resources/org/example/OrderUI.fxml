@@ -2,21 +2,34 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.UIController">
+<AnchorPane prefHeight="447.0" prefWidth="716.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.UIController">
     <!-- Header -->
     <Label fx:id="headerLabel" layoutX="20" layoutY="20" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Order Management System" />
+    <Button fx:id="beginOrderButton" layoutX="14.0" layoutY="113.0" onAction="#beginProcessingOrderButton" text="Begin Processing" />
+    <Button fx:id="completeOrderButton" layoutX="120.0" layoutY="113.0" onAction="#completeOrderButton" text="Complete Order" />
+    <Button fx:id="cancelOrderButton" layoutX="244.0" layoutY="113.0" onAction="#cancelOrderButton" text="Cancel Order" />
+    <Button fx:id="reinstateOrderButton" layoutX="330.0" layoutY="113.0" onAction="#reinstateOrderButton" text="Reinstate Order" />
+    <Button fx:id="exitButton" layoutX="21.0" layoutY="402.0" onAction="#exitButton" text="Exit" />
+   <ComboBox fx:id="warehouseComboBox" layoutX="541.0" layoutY="21.0" onAction="#changeWarehouseComboBox" prefHeight="25.0" prefWidth="161.0" promptText="Warehouse Selection" />
+   <ListView fx:id="orderListView" layoutX="13.0" layoutY="148.0" prefHeight="246.0" prefWidth="416.0" />
+    <ListView fx:id="itemListView" layoutX="436.0" layoutY="148.0" prefHeight="246.0" prefWidth="273.0" />
+   <Label layoutX="203.0" layoutY="57.0" prefHeight="45.0" prefWidth="99.0" style="-fx-font-weight: bold;" text="Orders" textAlignment="CENTER">
+      <font>
+         <Font size="30.0" />
+      </font>
+   </Label>
+   <Label layoutX="540.0" layoutY="91.0" prefHeight="45.0" prefWidth="86.0" style="-fx-font-weight: bold;" text="Items" textAlignment="CENTER">
+      <font>
+         <Font size="30.0" />
+      </font>
+   </Label>
+   <Label fx:id="notifLabel" layoutX="341.0" layoutY="18.0" prefHeight="31.0" prefWidth="190.0" textFill="RED">
+      <font>
+         <Font name="System Bold Italic" size="15.0" />
+      </font>
+   </Label>
 
-    <!-- Order Number Text Field -->
-    <TextField fx:id="orderNumberField" layoutX="20" layoutY="60" prefWidth="200" promptText="Enter Order Number" />
-
-    <!-- Buttons -->
-    <Button fx:id="displayOrderButton" layoutX="250" layoutY="60" onAction="#displayOrderButton" text="Display Order" />
-    <Button fx:id="beginOrderButton" layoutX="20" layoutY="100" onAction="#beginProcessingOrderButton" text="Begin Processing" />
-    <Button fx:id="completeOrderButton" layoutX="180" layoutY="100" onAction="#completeOrderButton" text="Complete Order" />
-    <Button fx:id="cancelOrderButton" layoutX="350" layoutY="100" onAction="#cancelOrderButton" text="Cancel Order" />
-    <Button fx:id="reinstateOrderButton" layoutX="500" layoutY="100" onAction="#reinstateOrderButton" text="Reinstate Order" />
-    <Button fx:id="exitButton" layoutX="20.0" layoutY="361.0" onAction="#exitButton" text="Exit" />
-   <TextArea fx:id="orderDisplayTextArea" layoutX="24.0" layoutY="140.0" prefHeight="200.0" prefWidth="552.0" />
 
 </AnchorPane>

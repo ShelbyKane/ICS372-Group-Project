@@ -60,13 +60,13 @@ public class Item {
      * @return a string representation of the item specifically formatted for displaying the entire order
      */
     public String stringForOrder(){
-        StringBuilder sb = new StringBuilder();
-        sb.append("\tName: "); //add a tab so it looks clean
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("[Name: "); //add a tab so it looks clean
         sb.append(this.name);
-        sb.append("\n\t"); //adding a new line then a tab so it fits neatly within the order
-        sb.append(this.quantity);
-        sb.append("\n\t");
-        sb.append(String.format("%.2f", this.price));
+//        sb.append("\n\t"); //adding a new line then a tab so it fits neatly within the order
+        sb.append(",Quantity: " + this.quantity);
+//        sb.append("\n\t");
+        sb.append(String.format(",Price: %.2f]", this.price));
 
         return String.valueOf(sb);
     }

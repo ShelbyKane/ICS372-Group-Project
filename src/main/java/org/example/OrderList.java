@@ -73,6 +73,14 @@ public class OrderList {
         }
         System.out.println("Total orders: " + orders.size());
     }
+    public String getSimpleString(){
+        String fin = "";
+        for (Order order : orders) {
+            fin = String.format(fin + "Order number: %d\tTotal cost: %.2f\tOrder status: %s\n", order.getOrderNumber(), order.getTotalCost(), order.getStage());
+        }
+        fin = String.format(fin + "Total orders: " + orders.size());
+        return fin;
+    }
 
     public void view_completed_orders() {
         int count = 0;

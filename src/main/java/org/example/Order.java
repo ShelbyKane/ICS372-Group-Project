@@ -91,6 +91,9 @@ public class Order {
         this.stage = s;
     }
 
+    public void setWarehouse(int id){
+        this.warehouseID = id;
+    }
 
     /**
      * addItem adds an item to the list of items
@@ -161,12 +164,24 @@ public class Order {
         System.out.println(String.valueOf(sb));
     }
 
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder("\n");
+        sb.append("Order Number: " + this.orderNumber);
+        sb.append(" | Type: " + this.type);
+        sb.append(" | Date: " + this.date);
+        sb.append("\nStage: " + this.stage);
+        sb.append(String.format(" | Total Price: %.2f", this.getTotalCost()));
+        if(!(this.stage.equals("incoming")) && this.warehouseID > 0) sb.append(" | Warehouse: " + this.warehouseID);
+
+        return String.valueOf(sb);
+    }
     /**
      * toString returns a reasonably legible string representation of the order, displaying all info and items
      * @return the order but in readable format
      */
-    @Override
-    public String toString() {
+
+    public String toLongString() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("Order number: " + this.orderNumber);
         sb.append("\nOrder type: " + this.type);
