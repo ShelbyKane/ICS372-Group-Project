@@ -1,4 +1,7 @@
 package org.example;
+
+import java.util.Objects;
+
 //**
 public class Item {
     private String name;
@@ -66,6 +69,22 @@ public class Item {
         sb.append(String.format("%.2f", this.price));
 
         return String.valueOf(sb);
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Item)) return false;
+
+        Item otherItem = (Item) o;
+
+        return otherItem.quantity == quantity
+                && otherItem.price == price
+                && Objects.equals(otherItem.name, name);
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(quantity,price,name);
     }
 
 }

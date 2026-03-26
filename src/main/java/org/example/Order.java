@@ -187,10 +187,15 @@ public class Order {
         if(!(o instanceof Order)) return false;
 
         Order otherOrder = (Order) o;
-        return otherOrder.getOrderNumber() == this.orderNumber
-                && otherOrder.getType().equals(this.type)
-                && otherOrder.getDate().equals(this.date)
-                && otherOrder.getStage().equals(this.stage)
+//        return otherOrder.getOrderNumber() == this.orderNumber
+//                && otherOrder.getType().equals(this.type)
+//                && otherOrder.getDate().equals(this.date)
+//                && otherOrder.getStage().equals(this.stage)
+//                && otherOrder.getTotalCost() == this.getTotalCost();
+        return otherOrder.orderNumber == this.orderNumber
+                && Objects.equals(otherOrder.type, type)
+                && Objects.equals(otherOrder.date, date)
+                && Objects.equals(otherOrder.stage, stage)
                 && otherOrder.getTotalCost() == this.getTotalCost();
     }
     @Override
