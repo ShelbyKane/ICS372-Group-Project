@@ -12,6 +12,13 @@ public class OrderList {
     private ArrayList<Order> orders = new ArrayList<>();    // list of orders
     private static HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
 
+    public OrderList() {
+        orders =  new ArrayList<>();
+    }
+
+    public OrderList(String path) {
+    }
+
     public OrderList(ArrayList<Order> orders){
         this.orders = orders;
     }
