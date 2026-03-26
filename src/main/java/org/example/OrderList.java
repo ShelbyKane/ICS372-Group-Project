@@ -18,6 +18,10 @@ public class OrderList {
         this.path = path;
     }
 
+    public OrderList(ArrayList<Order> orders){
+        this.orders = orders;
+    }
+
     public static boolean exists(String order_id) {
         return index.containsKey(order_id);
     }
@@ -33,6 +37,7 @@ public class OrderList {
     public int get_size() {
         return orders.size();
     }
+
 
     public Order get_order(String order_id) {
         return orders.get(index.get(order_id));
