@@ -2,7 +2,6 @@ package org.example;
 
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,13 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OrderList {
-    private String path = "";
     private ArrayList<Order> orders = new ArrayList<>();    // list of orders
     private static HashMap<String, Integer> index = new HashMap<>();   // index to keep track of orders
-
-    public OrderList(String path) {
-        this.path = path;
-    }
 
     public OrderList(ArrayList<Order> orders){
         this.orders = orders;
@@ -133,21 +127,6 @@ public class OrderList {
         System.out.println("Total orders: " + count);
     }
 
-    public boolean import_json_or_xml(String path) throws ParserConfigurationException, SAXException {
-        File file = new File(path);
-
-        if (file.getAbsolutePath().endsWith(".json")) {
-            import_json_file(path);
-        } else if (file.getAbsolutePath().endsWith(".xml")) {
-            import_xml_file(path);
-        } else {
-            System.out.println("Not a valid file");
-            return false;
-        }
-
-        return true;
-    }
-
     public void import_xml_file(String fileName) {
         File file_location = new File(fileName);
 
@@ -164,17 +143,11 @@ public class OrderList {
                 } else {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
-
-                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
-                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
-
-            } else {
-                System.out.println("OrderList error 1");
             }
 
 
-        } catch (ParserConfigurationException | IOException | SAXException | TransformerException ex) {
-            System.out.println("OrderList error 2");
+        } catch (ParserConfigurationException | IOException | SAXException ex) {
+            System.out.println("OrderList error 1");
         }
     }
 
@@ -194,17 +167,10 @@ public class OrderList {
                 } else {
                     index.put(String.valueOf(orders.get(current_idx).getOrderNumber()), current_idx);
                 }
-
-                String order_id = String.valueOf(orders.get(current_idx).getOrderNumber());
-                XMLHandler.exportXMLOrder(orders.get(current_idx), path + File.separator + ExtraMethods.create_filename(order_id));
-
-            } else {
-                System.out.println("OrderList error 3");
             }
 
-
-        } catch (IOException | TransformerException | ParserConfigurationException ex) {
-            System.out.println("OrderList error 4");
+        } catch (IOException ex) {
+            System.out.println("OrderList error 2");
         }
     }
 
@@ -212,4 +178,33 @@ public class OrderList {
         JSONHandler.exportAllOrders(orders, path);//Call the exportAllOrders method to write all orders to JSON;
     }
 
+    public ArrayList<Order> get_uncompleted_orders() {
+        ArrayList<Order> uncompleted_orders = new ArrayList<>();
+        for (Order order : orders) {
+            if (!order.getStage().equalsIgnoreCase("completed")) {
+                uncompleted_orders.add(order);
+            }
+        }
+
+        return uncompleted_orders;
+    }
+
+    public boolean import_json_or_xml(String path) throws ParserConfigurationException, SAXException {
+        File file = new File(path);
+
+        try (FileInputStream valid = new FileInputStream(file)) {
+            if (file.getAbsolutePath().endsWith(".json")) {
+                import_json_file(path);
+            } else if (file.getAbsolutePath().endsWith(".xml")) {
+                import_xml_file(path);
+            } else {
+                return false;
+            }
+
+        } catch (IOException ex) {
+            return false;
+        }
+
+        return true;
+    }
 }
