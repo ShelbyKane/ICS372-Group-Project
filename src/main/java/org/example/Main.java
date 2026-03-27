@@ -16,8 +16,8 @@ public class Main {
                 Scanner keyboard = new Scanner(System.in);  // user will interact with software using keyboard
                 String temp;                                // store input
 
-                OrderList order_list = new OrderList(backups.get_dir());
-        ReloadFiles.start_reload(order_list, backups.get_dir());
+                //OrderList order_list = new OrderList(backups.get_dir());
+        //ReloadFiles.start_reload(order_list, backups.get_dir());
         
         // Load previously imported files to avoid re-importing them
         AutoImporter.load_imported_files();
@@ -50,9 +50,11 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
-                    if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
+                    //if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
+                    if (features.zero_orders() || !features.valid_order(temp)) break;
 
-                    order_list.view(temp);
+                    //order_list.view(temp);
+                    features.view_an_order(temp);
 
                     break;
 
@@ -64,44 +66,63 @@ public class Main {
                     temp = keyboard.nextLine();
 
                     if (temp.equals("*")) break;                                    // back to main menu
-                    if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
+                    //if (order_list.is_empty() || !OrderList.exists(temp)) break;   // no order found
+                    if (features.zero_orders() || !features.valid_order(temp)) break;
+
                     order_id = temp;
-                    order_list.view(order_id);
+                    //order_list.view(order_id);
+                    features.view_an_order(temp);
 
                     System.out.println("Enter 1: in-progress\n2: completed\n3: cancelled\n4: reinstate");
                     temp = keyboard.nextLine();
+//                    switch (temp) {
+//                        case "1" -> order_list.get_order(order_id).startFulfilling();
+//                        case "2" -> order_list.get_order(order_id).completeOrder();
+//                        case "3" -> order_list.get_order(order_id).cancelOrder();
+//                        case "4" -> order_list.get_order(order_id).reinstateOrder();
+//                        default -> System.out.println("Error");
+//                    }
+
                     switch (temp) {
-                        case "1" -> order_list.get_order(order_id).startFulfilling();
-                        case "2" -> order_list.get_order(order_id).completeOrder();
-                        case "3" -> order_list.get_order(order_id).cancelOrder();
-                        case "4" -> order_list.get_order(order_id).reinstateOrder();
+                        case "1" -> features.edit_stage_fulfilling(order_id);
+                        case "2" -> features.edit_stage_completed(order_id);
+                        case "3" -> features.edit_stage_canceled(order_id);
+                        case "4" -> features.edit_stage_reinstate(order_id);
                         default -> System.out.println("Error");
                     }
 
-                    if (temp.equals("1")  || temp.equals("2") || temp.equals("3") || temp.equals("4")) {
-                        backups.save_backup(order_list.get_order(order_id));
-                    }
+//                    if (temp.equals("1")  || temp.equals("2") || temp.equals("3") || temp.equals("4")) {
+//                        backups.save_backup(order_list.get_order(order_id));
+//                    }
                     break;
 
                 case "3":   // display orders: completed orders, uncompleted orders, or all orders
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
                     System.out.println("Display orders.");
-                    System.out.println("1: completed orders\n2: uncompleted orders\n3: all orders");
-                    System.out.println("4: completed orders (all data)\n5: uncompleted orders (all data)\n6: all orders (all data)");
+//                    System.out.println("1: completed orders\n2: uncompleted orders\n3: all orders");
+//                    System.out.println("4: completed orders (all data)\n5: uncompleted orders (all data)\n6: all orders (all data)");
+                    System.out.println("1. view uncompleted orders");
                     System.out.println("*: main menu\nelse: error and still back to main menu");
                     temp = keyboard.nextLine();
 
                     if (temp.equalsIgnoreCase("*")) break;              // back to main menu
-                    if (order_list.is_empty()) break;   // no order found
+                    //if (order_list.is_empty()) break;   // no order found
+                    if (features.zero_orders()) break;
 
-                    switch (temp) {
-                        case "1" -> order_list.view_completed_orders();
-                        case "2" -> order_list.view_uncompleted_orders();
-                        case "3" -> order_list.view_all();
-                        case "4" -> order_list.view_completed_orders_detailed();
-                        case "5" -> order_list.view_uncompleted_orders_detailed();
-                        case "6" -> order_list.view_all_detailed();
-                        default -> System.out.println("Error");
+//                    switch (temp) {
+//                        case "1" -> order_list.view_completed_orders();
+//                        case "2" -> order_list.view_uncompleted_orders();
+//                        case "3" -> order_list.view_all();
+//                        case "4" -> order_list.view_completed_orders_detailed();
+//                        case "5" -> order_list.view_uncompleted_orders_detailed();
+//                        case "6" -> order_list.view_all_detailed();
+//                        default -> System.out.println("Error");
+//                    }
+
+                    if (temp.equals("1")) {
+                        System.out.println(features.get_uncompleted_orders_info());
+                    } else {
+                        System.out.println("Error");
                     }
                     break;
 
@@ -116,7 +137,8 @@ public class Main {
 
                     if (temp.equalsIgnoreCase("*")) break;  // back to main menu
 
-                    order_list.import_json_or_xml(temp);
+                    //order_list.import_json_or_xml(temp);
+                    features.import_file(temp);
 
                 case "5":
                     System.out.println("(Programming purpose only, will not be in the final state.)\n");
@@ -127,9 +149,12 @@ public class Main {
                     if (temp.equalsIgnoreCase("*")) break;  // back to main menu
 
                     if (temp.equals("1")) {                             // export orders into a JSON file
-                        if (!order_list.is_empty()) {
-                            String exportPath = "orders_export.json";   //Name of file & File created in the project root directory
-                            order_list.export_json_file(exportPath);
+//                        if (!order_list.is_empty()) {
+//                            String exportPath = "orders_export.json";   //Name of file & File created in the project root directory
+//                            order_list.export_json_file(exportPath);
+//                        }
+                        if (!features.zero_orders()) {
+                            features.import_file("orders_export.json");
                         }
                     }
                     break;
