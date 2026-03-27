@@ -17,6 +17,7 @@ public class SoftwareFeatures {
         ReloadFiles.start_reload(order_list, backups_dir.get_dir());
         reload_order_size = order_list.get_size();
         AutoImporter.load_imported_files();// load previously imported files to avoid re-importing them
+        start_auto_import();
     }
 
     public boolean zero_orders() {
