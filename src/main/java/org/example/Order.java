@@ -47,12 +47,12 @@ public class Order {
         // NOTE: XMLHandler checks if orderNum already exists in OrderList (returns an error message / null object).
         if (orderNum > 0) {
             this.orderNumber = orderNum;
-            if (orderNum > orderIndex) orderIndex = orderNum;
+            if (orderNum > orderIndex) orderIndex = orderNum + 1;
 
         // If the new Order does NOT have a given orderNumber, then check that the current orderIndex value isn't already in OrderList.
         } else {
 
-            this.orderNumber = orderIndex;
+            this.orderNumber = orderIndex++;
 
         }
 
@@ -62,7 +62,7 @@ public class Order {
         this.warehouseID = -1;                                                      // !! Note: Need to handle files having a warehouse ID
 
         items = new ArrayList<Item>();
-        orderIndex++;                                                               // Increment orderIndex to track total number of Orders
+                                                             // Increment orderIndex to track total number of Orders
     }
 
     //Getters ///////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ public class Order {
             totalCost+= i.getTotal();
         }
 
-        return totalCost;
+        return Math.round(totalCost * 100.00) / 100.00;
     }
 
     /**

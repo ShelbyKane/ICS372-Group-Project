@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class UIController{
 
@@ -32,6 +33,8 @@ public class UIController{
    @FXML
    private Label headerLabel;
    @FXML
+   private Label itemLabel;
+   @FXML
    private Label notifLabel;
    @FXML
    private TextArea itemTextArea;
@@ -49,6 +52,8 @@ public class UIController{
    //BUTTONS
    @FXML
     private Button beginOrderButton;
+   @FXML
+   private Button refreshButton;
    @FXML
     private Button completeOrderButton;
    @FXML
@@ -81,6 +86,7 @@ public class UIController{
         warehouseComboBox.getItems().setAll("Warehouse 1", "Warehouse 2", "Warehouse 3");
         currWarehouse = -1;
         setListeners();
+        setupCellFactory();
 
         orders = JSONHandler.importPreviousState(STATE_PATH);
         refreshUI();
@@ -89,11 +95,13 @@ public class UIController{
     }
 
     private void updateOrders(){
+        orders.sort(Comparator.comparingInt(Order::getOrderNumber));
         orderListView.getItems().setAll(FXCollections.observableArrayList(orders));
     }
     private void updateItems(){
         if(currOrder != null){
 
+            itemLabel.setText("Order " + currOrder.getOrderNumber() + " Items");
             ArrayList<String> stringList = new ArrayList<>();
             int count = 0;
             for(Item i : currOrder.getItems()){
@@ -142,6 +150,7 @@ public class UIController{
             } else if(name.endsWith(".xml")) {
                 try{
                     orders.add(XMLHandler.convertXMLToOrder(file.getAbsolutePath()));
+                    moveFile(file.getAbsolutePath(), BACKUP_PATH);
                 } catch(Exception e){
                     continue;
                 }
@@ -169,7 +178,7 @@ public class UIController{
                 .addListener((obs, oldOrder, selectedOrder) -> {
                     if (selectedOrder != null) {
                         currOrder = selectedOrder;
-                        refreshUI();
+                        updateItems();
                     }
                 });
 
@@ -182,8 +191,68 @@ public class UIController{
                         case "Warehouse 3" -> currWarehouse = 3;
                     }
                     notifLabel.setText("");
+                    refreshUI();
                 }
         );
+    }
+
+    //This function was partially written by ChatGPT
+    private void setupCellFactory() {
+        orderListView.setCellFactory(list -> new ListCell<Order>() {
+            @Override
+            protected void updateItem(Order order, boolean empty) {
+                super.updateItem(order, empty);
+
+                if (empty || order == null) {
+                    setText(null);
+                    setGraphic(null);
+                    setStyle("");
+                    return;
+                }
+
+                String type_icon = order.getType().equalsIgnoreCase("ship") ? "🚚" : "🏬";
+                String stage_icon = "";
+                String baseStyle = "-fx-text-fill: black;";
+                switch (order.getStage().toLowerCase()) {
+                    case "completed":
+                        baseStyle +=  "-fx-background-color: lightgreen;";
+                        stage_icon = "(✅)";
+                        break;
+                    case "in progress":
+                        baseStyle += ("-fx-background-color: lightblue;");
+
+                        stage_icon = "(🛒)";
+                        break;
+                    case "incoming":
+                        baseStyle += ("-fx-background-color: lightblue;");
+                        stage_icon = "(📨)";
+                        break;
+                    case "canceled":
+                        baseStyle += ("-fx-background-color: lightcoral;");
+                        stage_icon = "(❌)";
+                        break;
+                    default:
+                        baseStyle += "";
+                }
+
+                StringBuilder sb = new StringBuilder();
+
+                sb.append(type_icon);
+                sb.append("| Order #" + order.getOrderNumber());
+                sb.append(stage_icon + " | 📅 " + order.getDate());
+                if (order.getWarehouse() >= 1) sb.append(" | 🏠 " + order.getWarehouse());
+                sb.append(" | 💲 " + order.getTotalCost());
+
+                setText(String.valueOf(sb));
+
+                if(isSelected()){
+                    setStyle(baseStyle + "-fx-border-color: black; -fx-border-width: 2;");
+                } else {
+                    setStyle(baseStyle);
+                }
+
+            }
+        });
     }
 
 
@@ -224,7 +293,10 @@ public class UIController{
      */
     public void cancelOrderButton(ActionEvent e) {
         if(currOrder == null) return;
-        if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) currOrder.cancelOrder();
+        if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) {
+            currOrder.cancelOrder();
+            currOrder.setWarehouse(-1);
+        }
         refreshUI();
         saveState();
 
@@ -261,7 +333,9 @@ public class UIController{
         Platform.exit();
     }
 
-
+    public void refreshButton(ActionEvent e){
+        refreshUI();
+    }
 
 
 }
