@@ -4,13 +4,19 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.io.IOException;
 
 public class SoftwareFeatures {
     private FileLocator backups_dir = new FileLocator();
     private OrderList order_list = new OrderList();
+    private Timer auto_import_timer;
 
     public SoftwareFeatures() {
         ReloadFiles.start_reload(order_list, backups_dir.get_dir());
+
+        AutoImporter.load_imported_files();// load previously imported files to avoid re-importing them
     }
 
     public boolean zero_orders() {
@@ -82,5 +88,29 @@ public class SoftwareFeatures {
 
     public void export_json_file() {
         order_list.export_json_file("orders_export.json");
+    }
+
+    //start the auto-import timer that checks downloadedOrders folder every 3 seconds
+    public void start_auto_import() {
+        if (auto_import_timer != null) {
+            auto_import_timer.cancel(); //cancel existing timerr
+        }
+        
+        auto_import_timer = new Timer();
+        auto_import_timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                AutoImporter.read_folder("downloadedOrders", order_list);
+            }
+        }, 0, 3000); //start immediately, repeat every 3 secondss
+    }
+
+    //stop the auto-import timer
+    public void stop_auto_import() {
+        if (auto_import_timer != null) {
+            auto_import_timer.cancel();
+            auto_import_timer.purge();
+            auto_import_timer = null;
+        }
     }
 }
