@@ -293,10 +293,7 @@ public class UIController{
      */
     public void cancelOrderButton(ActionEvent e) {
         if(currOrder == null) return;
-        if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) {
-            currOrder.cancelOrder();
-            currOrder.setWarehouse(-1);
-        }
+        if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) currOrder.cancelOrder();
         refreshUI();
         saveState();
 

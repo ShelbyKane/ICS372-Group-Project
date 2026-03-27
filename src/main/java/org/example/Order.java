@@ -127,6 +127,7 @@ public class Order {
      */
     public void cancelOrder(){
         stage = "canceled";
+        warehouseID = -1;
     }
 
     public void reinstateOrder() {
