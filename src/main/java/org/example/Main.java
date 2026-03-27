@@ -6,8 +6,6 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXException;
 import java.util.Scanner;
 import java.io.*;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Main {
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException, TransformerException {
@@ -20,20 +18,18 @@ public class Main {
 
                 OrderList order_list = new OrderList(backups.get_dir());
         ReloadFiles.start_reload(order_list, backups.get_dir());
+        
+        // Load previously imported files to avoid re-importing them
+        AutoImporter.load_imported_files();
 
-                Timer timer = new Timer();  // create timer
-                timer.scheduleAtFixedRate(new TimerTask() {  // run repeatedly
-                    @Override
-            public void run() {
-                AutoImporter.read_folder("downloadedOrders", order_list);  // check downloadedOrders
-                //AutoImporter.read_folder("backupOrders", order_list);      // check backupOrders
-            }
-        }, 0, 3000);  // repeats every 3 seconds
+        SoftwareFeatures features = new SoftwareFeatures();
+        features.start_auto_import();  //start the auto-import timer
 
                 File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
                 File[] importFiles = importFolder.listFiles();              // get all files inside that folder
 
-
+        File testFile = new File("downloadedOrders/test.xml");
+        AutoImporter.copy_to_backup(testFile);
 
         String order_id;
 
@@ -154,8 +150,7 @@ public class Main {
 
         }
 
-        timer.cancel();
-        timer.purge();
+        features.stop_auto_import();  //stop the auto-import timer
         keyboard.close();
         System.out.println("Thank you for using the software. See you again soon!");
     }
