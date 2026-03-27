@@ -15,8 +15,7 @@ public class UILauncher extends Application {
     private OrderList temp_list;
 
     public UILauncher() {
-        myOrders = new ArrayList<Order>();
-        myOrders = JSONHandler.importPreviousState("src/data/previous_state.json");
+
     }
 
     @Override
@@ -29,7 +28,7 @@ public class UILauncher extends Application {
         // Get the controller instance created by FXMLLoader
         UIController controller = loader.getController();
 //        controller.setOrders(myOrders);  // inject your orders list
-        controller.initialize();
+//        controller.initialize();
 
         // Set up the scene and stage
         Scene scene = new Scene(root);

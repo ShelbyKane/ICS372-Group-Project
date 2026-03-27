@@ -10,9 +10,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.ArrayList;
 
 public class UIController{
+
+
+    private String STATE_PATH = "src/data/states/previous_state.json";
+    private String ORDER_PATH = "src/data";
+    private String BACKUP_PATH = "src/backups";
 
     private ArrayList<Order> orders;
     private ArrayList<Integer> orderNumbers;
@@ -53,7 +61,6 @@ public class UIController{
 
 
     public UIController(){ // creates controller instance
-
     }
     /*
         no longer need arg constructor since the FXMLLoader will always call the no-arg constructor
@@ -75,8 +82,9 @@ public class UIController{
         currWarehouse = -1;
         setListeners();
 
-        orders = JSONHandler.importPreviousState("src/data/previous_state.json");
-        updateOrders();
+        orders = JSONHandler.importPreviousState(STATE_PATH);
+        refreshUI();
+
 
     }
 
@@ -106,16 +114,64 @@ public class UIController{
     }
 
 
+    public void refreshUI(){
+        loadNewOrders();
+        updateOrders();
+        updateItems();
+
+    }
+
+    //LOGIC SETUP
+
+    public boolean saveState(){
+        return JSONHandler.exportAllOrders(orders, STATE_PATH);
+    }
+
+    private void loadNewOrders(){
+        File folder = new File(ORDER_PATH);
+        File[] files = folder.listFiles();
+
+        if(files == null) return;
+        for(File file: files) {
+            if(!file.isFile()) continue;
+            String name = file.getName().toLowerCase();
+
+            if(name.endsWith(".json")) {
+                orders.add(JSONHandler.importOrder(file.getPath()));
+                moveFile(file.getPath(),BACKUP_PATH);
+            } else if(name.endsWith(".xml")) {
+                try{
+                    orders.add(XMLHandler.convertXMLToOrder(file.getAbsolutePath()));
+                } catch(Exception e){
+                    continue;
+                }
+
+            }
+        }
+    }
+
+    private void moveFile(String originPath, String folderDir){
+        Path source = Paths.get(originPath);
+        Path targetDir = Paths.get(folderDir);
+        Path target = targetDir.resolve((source.getFileName()));
+        try{
+            Files.move(source, target, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.out.println("Problem backing up file");
+        }
+    }
+
+    //UI CONTROLS
 
     private void setListeners(){
         orderListView.getSelectionModel()
-             .selectedItemProperty()
-             .addListener((obs, oldOrder, selectedOrder) -> {
-                 if (selectedOrder != null) {
-                     currOrder = selectedOrder;
-                     updateItems();
-                 }
-             });
+                .selectedItemProperty()
+                .addListener((obs, oldOrder, selectedOrder) -> {
+                    if (selectedOrder != null) {
+                        currOrder = selectedOrder;
+                        refreshUI();
+                    }
+                });
 
         warehouseComboBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -128,11 +184,6 @@ public class UIController{
                     notifLabel.setText("");
                 }
         );
-    }
-
-    public void refreshUI(){
-        updateOrders();
-//        updateItems();
     }
 
 
@@ -160,6 +211,7 @@ public class UIController{
 
 
         refreshUI();
+        saveState();
 
     }
 
@@ -174,6 +226,7 @@ public class UIController{
         if(currOrder == null) return;
         if(currOrder.getStage().equals("in progress") || currOrder.getStage().equals("incoming")) currOrder.cancelOrder();
         refreshUI();
+        saveState();
 
     }
 
@@ -186,6 +239,7 @@ public class UIController{
         if(currOrder == null) return;
         if(currOrder.getStage().equals("in progress")) currOrder.completeOrder();
         refreshUI();
+        saveState();
     }
 
 
@@ -197,17 +251,18 @@ public class UIController{
         if (currOrder == null) return;
         if(currOrder.getStage().equals("canceled")) currOrder.reinstateOrder();
         refreshUI();
+        saveState();
     }
 
 
 
     public void exitButton(ActionEvent e){
+        saveState();
         Platform.exit();
     }
 
 
-    public void changeWarehouseComboBox(ActionEvent e){
 
-    }
+
 }
 

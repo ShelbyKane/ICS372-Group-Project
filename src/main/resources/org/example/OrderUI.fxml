@@ -12,7 +12,7 @@
     <Button fx:id="cancelOrderButton" layoutX="244.0" layoutY="113.0" onAction="#cancelOrderButton" text="Cancel Order" />
     <Button fx:id="reinstateOrderButton" layoutX="330.0" layoutY="113.0" onAction="#reinstateOrderButton" text="Reinstate Order" />
     <Button fx:id="exitButton" layoutX="21.0" layoutY="402.0" onAction="#exitButton" text="Exit" />
-   <ComboBox fx:id="warehouseComboBox" layoutX="541.0" layoutY="21.0" onAction="#changeWarehouseComboBox" prefHeight="25.0" prefWidth="161.0" promptText="Warehouse Selection" />
+   <ComboBox fx:id="warehouseComboBox" layoutX="541.0" layoutY="21.0" prefHeight="25.0" prefWidth="161.0" promptText="Warehouse Selection" />
    <ListView fx:id="orderListView" layoutX="13.0" layoutY="148.0" prefHeight="246.0" prefWidth="416.0" />
     <ListView fx:id="itemListView" layoutX="436.0" layoutY="148.0" prefHeight="246.0" prefWidth="273.0" />
    <Label layoutX="203.0" layoutY="57.0" prefHeight="45.0" prefWidth="99.0" style="-fx-font-weight: bold;" text="Orders" textAlignment="CENTER">
@@ -30,6 +30,7 @@
          <Font name="System Bold Italic" size="15.0" />
       </font>
    </Label>
+
 
 
 </AnchorPane>
