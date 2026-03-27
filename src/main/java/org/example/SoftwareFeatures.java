@@ -113,4 +113,15 @@ public class SoftwareFeatures {
             auto_import_timer = null;
         }
     }
+
+    public void save_orders_at_idx_n() throws ParserConfigurationException, TransformerException {
+        for (int i = reload_order_size; i <= order_list.get_size(); i++) {
+            save_backup(order_list.get_order_by_idx(i));
+        }
+        reload_order_size = order_list.get_size();
+    }
+
+    public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
+        backups_dir.save_backup(order);
+    }
 }
