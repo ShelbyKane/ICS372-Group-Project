@@ -101,6 +101,11 @@ public class SoftwareFeatures {
             @Override
             public void run() {
                 AutoImporter.read_folder("downloadedOrders", order_list);
+                try {
+                    save_orders_at_idx_n();
+                } catch (ParserConfigurationException | TransformerException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, 0, 3000); //start immediately, repeat every 3 secondss
     }
