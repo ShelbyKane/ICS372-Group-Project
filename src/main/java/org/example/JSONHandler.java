@@ -75,17 +75,19 @@ public class JSONHandler {
         Object itemsObj = orderObj.get("items");
         Object stageObj = orderObj.get("stage");
         Object orderNumObj = orderObj.get("orderNum");
-
+        Object orderWHObj = orderObj.get("warehouse");
 
         //Check Types and verify details are valid
-        String type = ((typeObj instanceof String)) ? (String) typeObj : "Not Available";
-//            type = (type.equals("ship") || type.equals("pickup")) ? type : "Not Available";
-        String stage = ((stageObj instanceof String)) ? (String) stageObj : "incoming";
+        String type = (typeObj instanceof String) ? (String) typeObj : "Not Available";
+        String stage = (stageObj instanceof String) ? (String) stageObj : "incoming";
         int orderNum = (orderNumObj instanceof Number) ? ((Number) orderNumObj).intValue() : -1;
-        Date date = ((dateObj instanceof Number)) ? new Date(((Number)dateObj).longValue()) : new Date();
+        if (orderNum < 1 ) orderNum = -1;
+        Date date = (dateObj instanceof Number) ? new Date(((Number)dateObj).longValue()) : new Date();
+        int warehouse = (orderWHObj instanceof  Number) ? ((Number) orderWHObj).intValue() : -1;
+        if (warehouse < -1) warehouse = -1;
 
         Order order = new Order(orderNum, type, stage, date);        //Begin Order creation
-
+        order.setWarehouse(warehouse);
         //Get items, convert and place into order object before returning
         JSONArray items = (itemsObj instanceof JSONArray) ? (JSONArray) itemsObj : new JSONArray();
         for(Item i : convertItems(items)){
@@ -113,6 +115,7 @@ public class JSONHandler {
         } catch(IOException | ParseException | NullPointerException e){
             System.out.println("Parse Exception: There was an error reading the JSON file. " +
                     "please confirm order is in correct format and try again");
+            e.printStackTrace();
 
         }
         return null;
@@ -176,17 +179,20 @@ public class JSONHandler {
      * @param fileLocation location where thee JSON file will be saved
      */
 
-    public static void exportAllOrders(ArrayList<Order> orders, String fileLocation) {
+    public static boolean exportAllOrders(ArrayList<Order> orders, String fileLocation) {
 
         JSONObject fullObj = new JSONObject(); //main JSON object for entire file
         JSONArray ordersArray = new JSONArray(); //array holding orders to export
 
         for (Order o : orders) {  //scanning each order & turning to JSON
             JSONObject orderObj = new JSONObject(); //Creating JSON object for each order
+            orderObj.put("orderNum", o.getOrderNumber());
             orderObj.put("type", o.getType());
             orderObj.put("order_date", o.getDate().getTime());
             orderObj.put("stage", o.getStage());
-            orderObj.put("orderNum", o.getOrderNumber());
+            if(o.getWarehouse() >0 ) orderObj.put("warehouse", o.getWarehouse());
+
+
 
             JSONArray itemsArray = new JSONArray(); //array holding items for this order
 
@@ -205,9 +211,11 @@ public class JSONHandler {
 
         try (FileWriter writer = new FileWriter(fileLocation)) { // writing the JSON to the file location
             writer.write(fullObj.toJSONString());
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 }

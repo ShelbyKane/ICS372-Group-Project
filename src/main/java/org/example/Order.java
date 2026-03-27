@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Order {
 
-    private static int orderIndex = 0; //order number, static, incremented each time constructor is called
+    private static int orderIndex = 1; //order number, static, incremented each time constructor is called
     private int orderNumber; //identifying number for the orders
     private String type; //type of order, can be either pick up or ship or direct delivery
     private ArrayList<Item> items; //list of items in the order
@@ -45,16 +45,15 @@ public class Order {
 
         // If orderNum > -1, then use orderNumber provided by import file. Increment orderIndex to keep track of total # of orders.
         // NOTE: XMLHandler checks if orderNum already exists in OrderList (returns an error message / null object).
-        if (orderNum > -1) {
+        if (orderNum > 0) {
             this.orderNumber = orderNum;
+            if (orderNum > orderIndex) orderIndex = orderNum;
 
         // If the new Order does NOT have a given orderNumber, then check that the current orderIndex value isn't already in OrderList.
         } else {
-            while (OrderList.exists(String.valueOf(orderIndex))) {
-                System.out.println("! order ID " + orderIndex + " already exists.");
-                orderIndex++;
-            }
+
             this.orderNumber = orderIndex;
+
         }
 
         this.type = type;                                                           // No default handling (XMLHandler reports an error / returns a null object)
@@ -95,6 +94,7 @@ public class Order {
         this.warehouseID = id;
     }
 
+    public int getWarehouse() {return this.warehouseID;}
     /**
      * addItem adds an item to the list of items
      * @param i
@@ -130,7 +130,7 @@ public class Order {
     }
 
     public void reinstateOrder() {
-            stage = "in progress";
+            stage = "incoming";
     }
 
     /**
