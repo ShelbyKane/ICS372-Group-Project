@@ -31,52 +31,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.time.ZoneId;
 
-/*
-directorywatcher / threading
-Feature 2) Export for every change
-Feature 5) import automatically in the background
- */
-/*  Questions:
-    - Should an XML / JSON file only have one order, or multiple orders? !!!
-
-    - If saving orders and what stage they're in, then files might have a stage tag (but they might also not).  Do we default to "incoming" if no orderStage tag?
-        Guessing yes. Added functionality for this.
-
-    - Should there be error checks on no orders in XML file, no items in an order, etc?
-    - Should there be functionality for dollars vs euros etc? Currency conversion?
-        - Should it require unit specification? If not, assume dollars?
-        Asking because: Paper Towel Roll specifies dollar units
-
-    - Should item ALWAYS have price and quantity? (assume yes?)
-
-    - Should it include possibility of date ordered tag; incoming vs fulfilled tag?
-        - !!! I think we need to add functionality for this. So that the auto-update and import continue to work for non-new orders.
-        - Also functionality for order ID. It's specified in XML file.
- */
-/*
-    To do:
-    JSON/XML Handlers
-        - Create interface? Abstract class? / facade?
-            - Takes file, if .json > JSON Handler; if .xml > XML Handler
-
-    Import: Largely done. Might need minor changes depending on design.
-        - !! Add functionality for if returning null order (no file? no relevant nodes in file?)
-        - Do we need Order / Item setters (for when importing a file)? Maybe not
-
- */
-
 public class XMLHandler {
-    //static String fileLoc = ".\\src\\data\\ExampleOrder1.xml";       // File location - !!! Update to a folder to loop through? Make a parameter? (likely latter)
-    //String fileLoc = System.getProperty("user.dir") + "\\src\\data\\ExampleOrder1.xml";
-
     // Convert XML File to Order
-    // !!! Note: Currently assuming each method call takes in 1 order / each file only has 1 order
+    // Assumes each method call takes in 1 order / each file only has 1 order
     public static Order convertXMLToOrder(String fileLocation) throws ParserConfigurationException, SAXException, IOException {
         //System.out.println("Testing convertToXMLOrder \n -----------");                                               //testing
         int orderNumber;                                    // ID num for orders. <Order id = "__">
         String orderStage;                                  // Stage order is in. Incoming, Fulfilling, Completed, Canceled. <OrderStage>__</OrderStage>
         String orderType;                                   // Pick-Up, Ship, Delivery. <OrderType>__</OrderType>
-        LocalDate orderDate;//= new Date();                 // Date order was placed. // !!! Use localdate?
+        LocalDate orderDate;//= new Date();                 // Date order was placed.
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.ENGLISH);                 // IF using LocalDate; formatter determines how to parse (and display?) dates.
 
         // Create factory object > Create builder object > Use builder to parse file
@@ -195,14 +158,14 @@ public class XMLHandler {
     }
 
 
-    // !!! NOTE: Currently assuming we are exporting 1 order per file
+    // Assumes we are exporting 1 order per file
     public static void exportXMLOrder(Order o, String fileLocation) throws TransformerException, ParserConfigurationException {
         //System.out.println("Testing exportALlXMLOrders");
         //String exportFileLoc = ".\\src\\data\\exampleExport.xml";
         // Date Format
         String pattern = "MM/dd/yyyy";
         DateFormat df = new SimpleDateFormat(pattern);
-        /*String strOrderDate = df.format(o.getDate());*/
+
 
         // Create factory object > Create builder object > Use builder to write file
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
