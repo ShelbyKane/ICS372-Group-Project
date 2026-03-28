@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Orders>
+    <Order id="20">
+        <OrderStage>incoming</OrderStage>
+        <OrderType>ship</OrderType>
+        <OrderDate>01/07/2018</OrderDate>
+        <Item type="Ramp">
+            <Price>85.99</Price>
+            <Quantity>1</Quantity>
+        </Item>
+        <Item type="Harpoon">
+            <Price>32.99</Price>
+            <Quantity>2</Quantity>
+        </Item>
+        <Item type="Whale Bank">
+            <Price>48.95</Price>
+            <Quantity>1</Quantity>
+        </Item>
+    </Order>
+</Orders>

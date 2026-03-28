@@ -1,0 +1,23 @@
+{
+  "order": {
+    "type": "delivery",
+    "order_date": 1650000000000,
+    "items": [
+      {
+        "name": "Bed Frame",
+        "quantity": 1,
+        "price": 299.99
+      },
+      {
+        "name": "Mattress",
+        "quantity": 1,
+        "price": 399.99
+      },
+      {
+        "name": "Pillow",
+        "quantity": 3,
+        "price": 19.99
+      }
+    ]
+  }
+}

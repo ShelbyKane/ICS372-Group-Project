@@ -4,7 +4,6 @@ plugins {
     java
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
@@ -22,6 +21,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.11.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("org.openjfx:javafx-controls:22")
+    implementation("org.openjfx:javafx-fxml:22")
 
 }
 javafx{
@@ -30,6 +31,9 @@ javafx{
 }
 application{
     mainClass.set("org.example.UILauncher")
+    applicationDefaultJvmArgs = listOf(
+        "--add-modules=javafx.controls,javafx.fxml"
+    )
 }
 
 tasks.named<Jar>("jar") {
