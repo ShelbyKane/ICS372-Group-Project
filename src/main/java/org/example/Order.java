@@ -41,6 +41,13 @@ public class Order {
         orderIndex++;
     }
 
+    /**
+     * Contructor: For processed order files with order number, order type, order stage, and order date.
+     * @param orderNum  Order number (order id).
+     * @param type      Order type.
+     * @param stage     Order stage.
+     * @param date      Order date.
+     */
     // Izzy - Draft. Adding an Order constructor with more detail (need this to track changes to orders over time, and to account for XML files having specified order IDs)
     // NOTE: Writing this w/ XMLHandler in mind. Need to ensure this works with JSONHandler
     public Order(int orderNum, String type, String stage, Date date) {
@@ -68,35 +75,69 @@ public class Order {
     }
 
     //Getters ///////////////////////////////////////////////////////////
+
+    /**
+     * Getter: Retrieve order number.
+     * @return  Order number (order id).
+     */
     public int getOrderNumber() {
         return orderNumber;
     }
 
+    /**
+     * Getter: Retrieve order type.
+     * @return Order type.
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Getter: Retrieve order stage.
+     * @return Order stage.
+     */
     public String getStage() {
         return stage;
     }
 
+    /**
+     * Getter: Retrieve order's item(s).
+     * @return  ArrayList of Item(s) under this order.
+     */
     public ArrayList<Item> getItems(){
         return items;
     }
 
+    /**
+     * Getter: Retrieve order date.
+     * @return  Order date.
+     */
     public Date getDate(){
         return date;
     }
 
+    /**
+     * Set order stage to given String.
+     * @param s Order stage.
+     */
     public void setStage(String s) {
         this.stage = s;
     }
 
+    /**
+     * Set the warehouse id.
+     * @param id    Warehouse id.
+     */
     public void setWarehouse(int id){
         this.warehouseID = id;
     }
 
+    /**
+     * Getter: Retrieve the order's warehouse id.
+     * @return  Warehouse id.
+     */
     public int getWarehouse() {return this.warehouseID;}
+
     /**
      * addItem adds an item to the list of items
      * @param i
@@ -167,6 +208,10 @@ public class Order {
         System.out.println(String.valueOf(sb));
     }
 
+    /**
+     * String of order details in human-readable language.
+     * @return  Order details.
+     */
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder("\n");
@@ -179,11 +224,11 @@ public class Order {
 
         return String.valueOf(sb);
     }
+
     /**
      * toString returns a reasonably legible string representation of the order, displaying all info and items
      * @return the order but in readable format
      */
-
     public String toLongString() {
         StringBuilder sb = new StringBuilder("\n");
         sb.append("Order number: " + this.orderNumber);
@@ -199,6 +244,11 @@ public class Order {
         return String.valueOf(sb);
     }
 
+    /**
+     * A method to check is another Order equals to this Order object.
+     * @param o   the reference object with which to compare.
+     * @return    True/False
+     */
     @Override
     public boolean equals(Object o){
         if(this == o) return true;
