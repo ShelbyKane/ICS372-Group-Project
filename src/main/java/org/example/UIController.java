@@ -210,7 +210,8 @@ public class UIController{
                     return;
                 }
 
-                String type_icon = order.getType().equalsIgnoreCase("ship") ? "🚚" : "🏬";
+                String type_icon = (order.getType().equalsIgnoreCase("ship")
+                        || order.getType().equalsIgnoreCase("delivery")) ? "🚚" : "🏬";
                 String stage_icon = "";
                 String baseStyle = "-fx-text-fill: black;";
                 switch (order.getStage().toLowerCase()) {
