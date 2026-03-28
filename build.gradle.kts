@@ -1,7 +1,10 @@
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     java
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
@@ -22,18 +25,24 @@ dependencies {
 
 }
 javafx{
-    version = "21"
+    version = "22"
     modules = listOf("javafx.controls", "javafx.fxml")
 }
 application{
     mainClass.set("org.example.UILauncher")
 }
-tasks.withType<JavaExec> {
-    jvmArgs = listOf(
-        "--module-path", "C:/Users/nosid/javafx-sdk-21/lib",
-        "--add-modules", "javafx.controls,javafx.fxml"
-    )
+
+tasks.named<Jar>("jar") {
+    manifest {
+        attributes["Main-Class"] = "org.example.UILauncher"
+    }
 }
+//tasks.withType<JavaExec> {
+//    jvmArgs = listOf(
+//        "--module-path", "C:/Users/nosid/javafx-sdk-21/lib",
+//        "--add-modules", "javafx.controls,javafx.fxml"
+//    )
+//}
 tasks.test {
     useJUnitPlatform()
 }

@@ -19,9 +19,9 @@ import java.util.Comparator;
 public class UIController{
 
 
-    private String STATE_PATH = "src/data/states/previous_state.json";
-    private String ORDER_PATH = "src/data";
-    private String BACKUP_PATH = "src/backups";
+    private String STATE_PATH = "orders_export.json";
+    private String ORDER_PATH = "downloadedOrders";
+    private String BACKUP_PATH = "backupOrders";
 
     private ArrayList<Order> orders;
     private ArrayList<Integer> orderNumbers;
@@ -67,26 +67,12 @@ public class UIController{
 
     public UIController(){ // creates controller instance
     }
-    /*
-        no longer need arg constructor since the FXMLLoader will always call the no-arg constructor
 
-        kept it in just in case we need it
-
-     */
-    /*public UIController(ArrayList<Order> orders){
-        this.orders = orders;
-        orderNumbers = new ArrayList();
-
-        for(Order o : orders){
-            orderNumbers.add(o.getOrderNumber());
-        }
-    }
-     */
     public void initialize(){
         warehouseComboBox.getItems().setAll("Warehouse 1", "Warehouse 2", "Warehouse 3");
         currWarehouse = -1;
         setListeners();
-        setupCellFactory();
+        setupOrderCells();
 
         orders = JSONHandler.importPreviousState(STATE_PATH);
         refreshUI();
@@ -94,47 +80,19 @@ public class UIController{
 
     }
 
-    private void updateOrders(){
-        orders.sort(Comparator.comparingInt(Order::getOrderNumber));
-        orderListView.getItems().setAll(FXCollections.observableArrayList(orders));
-    }
-    private void updateItems(){
-        if(currOrder != null){
 
-            itemLabel.setText("Order " + currOrder.getOrderNumber() + " Items");
-            ArrayList<String> stringList = new ArrayList<>();
-            int count = 0;
-            for(Item i : currOrder.getItems()){
-                StringBuilder sb = new StringBuilder("\n");
-                sb.append("[Item " + (++count));
-                sb.append("]\nName: " + i.getName());
-                sb.append(", Quantity: " + i.getQuantity());
-                sb.append(String.format(", Price: %.2f", i.getPrice()));
-                stringList.add(String.valueOf(sb));
-//                sb.append(i.stringForOrder());
-            }
-//            itemTextArea.setText(String.valueOf(sb));
-            itemListView.getItems().setAll(FXCollections.observableArrayList(stringList));
-
-
-//            itemTextArea.setText(currOrder.getItems().toString());
-        }
-    }
-
-
-    public void refreshUI(){
-        loadNewOrders();
-        updateOrders();
-        updateItems();
-
-    }
 
     //LOGIC SETUP
 
-    public boolean saveState(){
-        return JSONHandler.exportAllOrders(orders, STATE_PATH);
-    }
+    /**
+     * Saves the state of the program to a JSON file at STATE_PATH
+     * @return
+     */
+    public boolean saveState(){return JSONHandler.exportAllOrders(orders, STATE_PATH);}
 
+    /**
+     * Loads all the new orders into the current orders List from ORDER_PATH
+     */
     private void loadNewOrders(){
         File folder = new File(ORDER_PATH);
         File[] files = folder.listFiles();
@@ -159,6 +117,11 @@ public class UIController{
         }
     }
 
+    /**
+     * Moves file from one location to another folder
+     * @param originPath File to be moved
+     * @param folderDir Destination Folder
+     */
     private void moveFile(String originPath, String folderDir){
         Path source = Paths.get(originPath);
         Path targetDir = Paths.get(folderDir);
@@ -172,6 +135,43 @@ public class UIController{
 
     //UI CONTROLS
 
+    /**
+     * Updates the Order listView
+     */
+    private void updateOrders(){
+        try{
+            orders.sort(Comparator.comparingInt(Order::getOrderNumber));
+            orderListView.getItems().setAll(FXCollections.observableArrayList(orders));
+        } catch (NullPointerException e){
+        }
+
+    }
+
+    /**
+     * Updates the Item listView
+     */
+    private void updateItems(){
+        if(currOrder != null){
+
+            itemLabel.setText("Order " + currOrder.getOrderNumber() + " Items");
+            ArrayList<String> stringList = new ArrayList<>();
+            int count = 0;
+            for(Item i : currOrder.getItems()) {
+                StringBuilder sb = new StringBuilder("\n");
+                sb.append("[Item " + (++count));
+                sb.append("]\nName: " + i.getName());
+                sb.append(", Quantity: " + i.getQuantity());
+                sb.append(String.format(", Price: %.2f", i.getPrice()));
+                stringList.add(String.valueOf(sb));
+            }
+            itemListView.getItems().setAll(FXCollections.observableArrayList(stringList));
+
+        }
+    }
+
+    /**
+     * Sets up listeners for both the Warehouse combo box and the Order
+     */
     private void setListeners(){
         orderListView.getSelectionModel()
                 .selectedItemProperty()
@@ -196,8 +196,11 @@ public class UIController{
         );
     }
 
-    //This function was partially written by ChatGPT
-    private void setupCellFactory() {
+    /**
+     * Sets up the Order listView cells to have certain format dependent on their properties
+     * This was partially written with ChatGPT
+     */
+    private void setupOrderCells() {
         orderListView.setCellFactory(list -> new ListCell<Order>() {
             @Override
             protected void updateItem(Order order, boolean empty) {
@@ -256,14 +259,21 @@ public class UIController{
         });
     }
 
+    /**
+     * Refreshes the listViews on the UI to be updated new orders or items
+     */
+    public void refreshUI(){
+        loadNewOrders();
+        updateOrders();
+        updateItems();
+
+    }
 
     //BUTTONS
+
     /**
-     * This takes an action event, when the Begin Processing button is hit, and pulls the order number from the textbox
-     * and begins processing the order
-     * If the order number isn't an integer, it'll tell the user it isn't valid
-     * If the order number isn't a current order, it'll tell the user that it isn't an order that exists
-     * @param e
+     *Sets the selected Order's stage to complete
+     *Selected Order comes from listView
      */
     public void beginProcessingOrderButton(ActionEvent e) {
         if (currOrder == null) return;
@@ -285,12 +295,9 @@ public class UIController{
 
     }
 
-
     /**
-     *When the cancel order button is hit, it validates that the order number is valid, then tries to cancel the order
-     * if the order is canceled or completed, it will let the user know
-     * otherwise, the order will be canceled
-     * @param e
+     *Sets the selected Order's stage to complete
+     *Selected Order comes from listView
      */
     public void cancelOrderButton(ActionEvent e) {
         if(currOrder == null) return;
@@ -300,10 +307,9 @@ public class UIController{
 
     }
 
-
     /**
-     *completeOrderButton completes an order that is currently in progress.
-     * @param e
+     *Sets the selected Order's stage to complete
+     *Selected Order comes from listView
      */
     public void completeOrderButton(ActionEvent e){
         if(currOrder == null) return;
@@ -312,10 +318,9 @@ public class UIController{
         saveState();
     }
 
-
     /**
-     *
-     * @param e
+     *Sets the selected Order's stage from canceled to incoming
+     *Selected Order comes from listView
      */
     public void reinstateOrderButton(ActionEvent e){
         if (currOrder == null) return;
@@ -324,17 +329,19 @@ public class UIController{
         saveState();
     }
 
-
-
+    /**
+     *Saves the current state of the program and then closes the program
+     *
+     */
     public void exitButton(ActionEvent e){
         saveState();
         Platform.exit();
     }
 
-    public void refreshButton(ActionEvent e){
-        refreshUI();
-    }
-
+    /**
+     * Refreshes the UI listViews
+     */
+    public void refreshButton(ActionEvent e){refreshUI();}
 
 }
 

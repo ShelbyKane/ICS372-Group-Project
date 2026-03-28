@@ -5,18 +5,12 @@ package org.example;
     import javafx.scene.Parent;
     import javafx.scene.Scene;
     import javafx.stage.Stage;
+    import org.example.OldandDerivedClasses.OrderList;
+
     import java.util.ArrayList;
-    import java.util.Timer;
-    import java.util.TimerTask;
 
 public class UILauncher extends Application {
 
-    private ArrayList<Order> myOrders;
-    private OrderList temp_list;
-
-    public UILauncher() {
-
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,8 +21,6 @@ public class UILauncher extends Application {
 
         // Get the controller instance created by FXMLLoader
         UIController controller = loader.getController();
-//        controller.setOrders(myOrders);  // inject your orders list
-//        controller.initialize();
 
         // Set up the scene and stage
         Scene scene = new Scene(root);

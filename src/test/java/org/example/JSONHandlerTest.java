@@ -26,6 +26,7 @@ class JSONHandlerTest {
 
         Order orderTest = new Order(1,"ship","incoming",new Date(1515354694451L));
         orderTest.setWarehouse(-1);
+
         orderTest.addItem(new Item("Chair",1, 85.99));
         orderTest.addItem(new Item("Lamp",2, 32.99));
         orderTest.addItem(new Item("Rug",1, 48.95));

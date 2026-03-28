@@ -121,7 +121,11 @@ public class JSONHandler {
         return null;
     }
 
-
+    /**
+     * Imports a list of orders from a previous state JSON file
+     * @param fileLocation path to previous state JSON file to be parsed
+     * @return List of Orders
+     */
     public static ArrayList<Order> importPreviousState(String fileLocation){
         ArrayList<Order> orderList = new ArrayList<>();
 
@@ -173,12 +177,12 @@ public class JSONHandler {
         }
         return itemList;
     }
+
     /** This method takes all of the current orders in the system and
      *  writes them into a single JSON file at the given file location.
      * @param orders ArrayList of Order objects currently in memory
      * @param fileLocation location where thee JSON file will be saved
      */
-
     public static boolean exportAllOrders(ArrayList<Order> orders, String fileLocation) {
 
         JSONObject fullObj = new JSONObject(); //main JSON object for entire file

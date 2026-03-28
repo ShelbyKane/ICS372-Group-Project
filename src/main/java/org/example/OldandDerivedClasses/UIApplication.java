@@ -1,4 +1,4 @@
-package org.example;
+package org.example.OldandDerivedClasses;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

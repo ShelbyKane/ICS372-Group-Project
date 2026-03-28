@@ -1,4 +1,7 @@
-package org.example;
+package org.example.OldandDerivedClasses;
+
+import org.example.Order;
+import org.example.XMLHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;

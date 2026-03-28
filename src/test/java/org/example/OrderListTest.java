@@ -1,10 +1,8 @@
 package org.example;
 
+import org.example.OldandDerivedClasses.OrderList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderListTest {
 

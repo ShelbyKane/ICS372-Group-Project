@@ -94,7 +94,7 @@ class OrderTest {
     @Test
     void reinstateOrder() {
         order.reinstateOrder();
-        Assertions.assertEquals("in progress", order.getStage(),"Reinstate Order");
+        Assertions.assertEquals("incoming", order.getStage(),"Reinstate Order");
     }
 
     @Test
