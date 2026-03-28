@@ -6,17 +6,18 @@ import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.io.IOException;
 
 public class SoftwareFeatures {
     private FileLocator backups_dir = new FileLocator();
     private OrderList order_list = new OrderList();
     private Timer auto_import_timer;
+    private int reload_order_size;
 
     public SoftwareFeatures() {
         ReloadFiles.start_reload(order_list, backups_dir.get_dir());
-
+        reload_order_size = order_list.get_size();
         AutoImporter.load_imported_files();// load previously imported files to avoid re-importing them
+        start_auto_import();
     }
 
     public boolean zero_orders() {
@@ -36,7 +37,7 @@ public class SoftwareFeatures {
             return false;
         }
         order_list.get_order(order_number).startFulfilling();
-        backups_dir.save_backup(order_list.get_order(order_number));
+        save_backup(order_list.get_order(order_number));
         return true;
     }
 
@@ -45,7 +46,7 @@ public class SoftwareFeatures {
             return false;
         }
         order_list.get_order(order_number).completeOrder();
-        backups_dir.save_backup(order_list.get_order(order_number));
+        save_backup(order_list.get_order(order_number));
         return true;
     }
 
@@ -54,7 +55,7 @@ public class SoftwareFeatures {
             return false;
         }
         order_list.get_order(order_number).cancelOrder();
-        backups_dir.save_backup(order_list.get_order(order_number));
+        save_backup(order_list.get_order(order_number));
         return true;
     }
 
@@ -63,17 +64,17 @@ public class SoftwareFeatures {
             return false;
         }
         order_list.get_order(order_number).reinstateOrder();
-        backups_dir.save_backup(order_list.get_order(order_number));
+        save_backup(order_list.get_order(order_number));
         return true;
     }
 
     public String get_uncompleted_orders_info() {
-        String prints = "";
+        StringBuilder prints = new StringBuilder();
         ArrayList<Order> uncompleted_orders = order_list.get_uncompleted_orders();
         for (Order order : uncompleted_orders) {
-            prints = prints + String.format("%d\t\t\t\t\t%s\t\t\t\t\t%.2f\n", order.getOrderNumber(), order.getStage(), order.getTotalCost());
+            prints.append(String.format("%-20d%-20s%.2f\n", order.getOrderNumber(), order.getStage(), order.getTotalCost()));
         }
-        return prints;
+        return prints.toString();
     }
 
     public ArrayList<Order> get_uncompleted_orders() {
@@ -82,7 +83,7 @@ public class SoftwareFeatures {
 
     public boolean import_file(String path) throws ParserConfigurationException, SAXException, TransformerException {
         if (!order_list.import_json_or_xml(path)) return false;
-        backups_dir.save_backup(order_list.get_last_order());
+        save_backup(order_list.get_last_order());
         return true;
     }
 
@@ -101,6 +102,11 @@ public class SoftwareFeatures {
             @Override
             public void run() {
                 AutoImporter.read_folder("downloadedOrders", order_list);
+                try {
+                    save_orders_at_idx_n();
+                } catch (ParserConfigurationException | TransformerException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, 0, 3000); //start immediately, repeat every 3 secondss
     }
@@ -112,5 +118,16 @@ public class SoftwareFeatures {
             auto_import_timer.purge();
             auto_import_timer = null;
         }
+    }
+
+    public void save_orders_at_idx_n() throws ParserConfigurationException, TransformerException {
+        for (int i = reload_order_size; i <= order_list.get_size(); i++) {
+            save_backup(order_list.get_order_by_idx(i));
+        }
+        reload_order_size = order_list.get_size();
+    }
+
+    public void save_backup(Order order) throws ParserConfigurationException, TransformerException {
+        backups_dir.save_backup(order);
     }
 }

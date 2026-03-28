@@ -39,6 +39,9 @@ public class OrderList {
         return orders.size();
     }
 
+    public Order get_order_by_idx(int idx) {
+        return orders.get(idx);
+    }
 
     public Order get_order(String order_id) {
         return orders.get(index.get(order_id));
