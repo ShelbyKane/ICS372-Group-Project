@@ -20,16 +20,16 @@ public class Main {
         //ReloadFiles.start_reload(order_list, backups.get_dir());
         
         // Load previously imported files to avoid re-importing them
-        AutoImporter.load_imported_files();
+//        AutoImporter.load_imported_files();
 
         SoftwareFeatures features = new SoftwareFeatures();
 //        features.start_auto_import();  //start the auto-import timer
-
-                File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
-                File[] importFiles = importFolder.listFiles();              // get all files inside that folder
-
-        File testFile = new File("downloadedOrders/test.xml");
-        AutoImporter.copy_to_backup(testFile);
+//
+//                File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
+//                File[] importFiles = importFolder.listFiles();              // get all files inside that folder
+//
+//        File testFile = new File("exampleOrders/test.xml");
+//        AutoImporter.copy_to_backup(testFile);
 
         String order_id;
 

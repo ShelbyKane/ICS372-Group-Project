@@ -4,6 +4,7 @@ import org.example.Order;
 import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -120,6 +121,12 @@ public class SoftwareFeatures {
                 }
             }
         }, 0, 3000); //start immediately, repeat every 3 secondss
+
+        File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
+        File[] importFiles = importFolder.listFiles();              // get all files inside that folder
+
+        File testFile = new File("downloadedOrders/test.xml");
+        AutoImporter.copy_to_backup(testFile);
     }
 
     //stop the auto-import timer
@@ -132,7 +139,7 @@ public class SoftwareFeatures {
     }
 
     public void save_orders_at_idx_n() throws ParserConfigurationException, TransformerException {
-        for (int i = reload_order_size; i <= order_list.get_size(); i++) {
+        for (int i = reload_order_size; i < order_list.get_size(); i++) {
             save_backup(order_list.get_order_by_idx(i));
         }
         reload_order_size = order_list.get_size();
