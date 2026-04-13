@@ -78,6 +78,16 @@ public class SoftwareFeatures {
         return prints.toString();
     }
 
+    public String get_all_orders_info() {
+        StringBuilder prints = new StringBuilder();
+        ArrayList<Order> uncompleted_orders = order_list.get_all_orders();
+        for (Order order : uncompleted_orders) {
+            prints.append(order.toLongString());
+            prints.append("\n");
+        }
+        return prints.toString();
+    }
+
     public ArrayList<Order> get_uncompleted_orders() {
         return order_list.get_uncompleted_orders();
     }
@@ -104,7 +114,7 @@ public class SoftwareFeatures {
             public void run() {
                 AutoImporter.read_folder("downloadedOrders", order_list);
                 try {
-                    save_orders_at_idx_n();
+                    if (reload_order_size != order_list.get_size()) save_orders_at_idx_n();
                 } catch (ParserConfigurationException | TransformerException e) {
                     throw new RuntimeException(e);
                 }

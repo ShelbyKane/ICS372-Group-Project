@@ -23,7 +23,7 @@ public class Main {
         AutoImporter.load_imported_files();
 
         SoftwareFeatures features = new SoftwareFeatures();
-        features.start_auto_import();  //start the auto-import timer
+//        features.start_auto_import();  //start the auto-import timer
 
                 File importFolder = new File("downloadedOrders");  // created File object. identify folder where files posted
                 File[] importFiles = importFolder.listFiles();              // get all files inside that folder
@@ -54,7 +54,7 @@ public class Main {
                     if (features.zero_orders() || !features.valid_order(temp)) break;
 
                     //order_list.view(temp);
-                    features.view_an_order(temp);
+                    System.out.println(features.view_an_order(temp));
 
                     break;
 
@@ -101,7 +101,7 @@ public class Main {
                     System.out.println("Display orders.");
 //                    System.out.println("1: completed orders\n2: uncompleted orders\n3: all orders");
 //                    System.out.println("4: completed orders (all data)\n5: uncompleted orders (all data)\n6: all orders (all data)");
-                    System.out.println("1. view uncompleted orders");
+                    System.out.println("1. view uncompleted orders\n2. view all orders");
                     System.out.println("*: main menu\nelse: error and still back to main menu");
                     temp = keyboard.nextLine();
 
@@ -121,6 +121,8 @@ public class Main {
 
                     if (temp.equals("1")) {
                         System.out.println(features.get_uncompleted_orders_info());
+                    } else if (temp.equals("2")) {
+                        System.out.println(features.get_all_orders_info());
                     } else {
                         System.out.println("Error");
                     }

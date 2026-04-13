@@ -202,6 +202,10 @@ public class OrderList {
         return uncompleted_orders;
     }
 
+    public ArrayList<Order> get_all_orders() {
+        return new ArrayList<>(orders);
+    }
+
     public boolean import_json_or_xml(String path) throws ParserConfigurationException, SAXException {
         File file = new File(path);
 
